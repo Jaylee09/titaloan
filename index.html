@@ -1676,7 +1676,7 @@
                 const dueDate = new Date(appliedDate);
                 dueDate.setMonth(dueDate.getMonth() + i);
                 remaining -= calc.monthlyPayment;
-                tbody.innerHTML += `叭<td>Month ${i}</td><td>${dueDate.toISOString().split('T')[0]}</td>
+                tbody.innerHTML += `<td>Month ${i}</td><td>${dueDate.toISOString().split('T')[0]}</td>
                     <td>${formatCurrency(calc.monthlyPayment)}</td><td>${formatCurrency(Math.max(0, remaining))}</td>
                   </tr>`;
             }
