@@ -471,7 +471,7 @@
             <div class="dashboard-cards">
                 <div class="dashboard-card">
                     <h3>Apply for Loan</h3>
-                    <p>Start a new loan application</p>
+                    <p>Start a new loan application (₱1,000 - ₱2,000)</p>
                     <button id="apply-new-loan" class="success-btn">Apply Now</button>
                 </div>
                 <div class="dashboard-card">
@@ -566,8 +566,9 @@
                 <label>Loan Amount (₱)</label>
                 <div style="position: relative;">
                     <span class="currency-symbol">₱</span>
-                    <input type="number" id="loan-amount" class="amount-input" placeholder="1,000 - 20,000" min="1000" max="20000">
+                    <input type="number" id="loan-amount" class="amount-input" placeholder="1,000 - 2,000" min="1000" max="2000">
                 </div>
+                <div class="error-message" id="loan-amount-error" style="color: #e74c3c; font-size: 0.8rem; margin-top: 5px;">Amount must be between ₱1,000 and ₱2,000</div>
             </div>
             <div class="form-group">
                 <label>Payment Period (Months)</label>
@@ -753,9 +754,9 @@
             <h3>Payment Schedule</h3>
             <div style="overflow-x: auto;">
                 <table class="payment-schedule-table">
-                    <thead><tr><th>Month</th><th>Due Date</th><th>Amount</th><th>Remaining</th></tr></thead>
+                    <thead> <th>Month</th><th>Due Date</th><th>Amount</th><th>Remaining</th> </thead>
                     <tbody id="payment-schedule-preview"></tbody>
-                </table>
+                                   </table>
             </div>
             
             <button class="secondary-btn" id="back-to-documents">← Back</button>
@@ -778,9 +779,9 @@
             <h3>Payment Schedule</h3>
             <div style="overflow-x: auto;">
                 <table class="payment-schedule-table">
-                    <thead><tr><th>Month</th><th>Due Date</th><th>Original</th><th>Penalty</th><th>Total Due</th><th>Status</th><th>Action</th></tr></thead>
+                    <thead> <th>Month</th><th>Due Date</th><th>Original</th><th>Penalty</th><th>Total Due</th><th>Status</th><th>Action</th> </thead>
                     <tbody id="payment-history-table"></tbody>
-                </table>
+                  </table>
             </div>
             
             <!-- Payment Modal -->
@@ -821,7 +822,7 @@
                     </div>
                     
                     <button class="secondary-btn" onclick="closePaymentModal()">Cancel</button>
-                    <button class="success-btn" onclick="submitPaymentForApproval()" id="submit-payment-btn" disabled>Submit Payment</button>
+                    <button class="success-btn" onclick="showPaymentConfirmation()" id="submit-payment-btn" disabled>Submit Payment</button>
                 </div>
             </div>
             
@@ -873,7 +874,7 @@
             </div>
             <h3>Recent Loan Applications</h3>
             <div style="overflow-x: auto;">
-                <table class="admin-table"><thead><tr><th>User</th><th>Amount</th><th>Months</th><th>Status</th><th>Action</th></tr></thead><tbody id="admin-recent-loans"></tbody></table>
+                <table class="admin-table"><thead> <th>User</th><th>Amount</th><th>Months</th><th>Status</th><th>Action</th> </thead><tbody id="admin-recent-loans"></tbody> </table>
             </div>
         </div>
         
@@ -882,8 +883,8 @@
             <div style="padding: 20px; background: var(--card-bg); border-radius: 20px;">
                 <div class="form-group"><label>Interest Rate (%)</label><input type="number" id="interest-rate" value="5" min="1" max="20"></div>
                 <div class="form-group"><label>Penalty Rate (% per day)</label><input type="number" id="penalty-rate" value="1" min="1" max="10"></div>
-                <div class="form-group"><label>Min Loan (₱)</label><input type="number" id="min-loan" value="1000"></div>
-                <div class="form-group"><label>Max Loan (₱)</label><input type="number" id="max-loan" value="20000"></div>
+                <div class="form-group"><label>Min Loan (₱)</label><input type="number" id="min-loan" value="1000" min="1000" max="2000"></div>
+                <div class="form-group"><label>Max Loan (₱)</label><input type="number" id="max-loan" value="2000" min="1000" max="2000"></div>
                 <button onclick="saveRegulations()" class="success-btn">Save</button>
                 <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
             </div>
@@ -902,7 +903,7 @@
         <div id="admin-validation-page" class="page">
             <h1>✅ Loan Validation</h1>
             <div style="overflow-x: auto;">
-                <table class="admin-table"><thead><tr><th>User</th><th>Loan ID</th><th>Amount</th><th>Months</th><th>Actions</th></tr></thead><tbody id="pending-validation-table"></tbody></table>
+                <table class="admin-table"><thead> <th>User</th><th>Loan ID</th><th>Amount</th><th>Months</th><th>Actions</th> </thead><tbody id="pending-validation-table"></tbody> </table>
             </div>
             <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
         </div>
@@ -911,7 +912,7 @@
             <h1>📄 Receipt Approval</h1>
             <p>Review and approve payment receipts submitted by clients</p>
             <div style="overflow-x: auto;">
-                <table class="admin-table"><thead><tr><th>User</th><th>Loan ID</th><th>Month</th><th>Amount</th><th>Method</th><th>Reference</th><th>Receipt</th><th>Actions</th></tr></thead><tbody id="payment-approval-table"></tbody></table>
+                <table class="admin-table"><thead> <th>User</th><th>Loan ID</th><th>Month</th><th>Amount</th><th>Method</th><th>Reference</th><th>Receipt</th><th>Actions</th> </thead><tbody id="payment-approval-table"></tbody> </table>
             </div>
             <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
         </div>
@@ -926,7 +927,7 @@
                 <p><strong>Address:</strong> <span id="profile-user-address"></span></p>
                 <p><strong>Wallet:</strong> <span id="profile-wallet-balance"></span></p>
                 <h4>Loan History</h4>
-                <div style="overflow-x: auto;"><table class="admin-table"><thead><tr><th>Loan ID</th><th>Amount</th><th>Status</th></tr></thead><tbody id="profile-user-loans"></tbody></table></div>
+                <div style="overflow-x: auto;"><table class="admin-table"><thead> <th>Loan ID</th><th>Amount</th><th>Status</th> </thead><tbody id="profile-user-loans"></tbody> </table></div>
             </div>
             <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
         </div>
@@ -934,7 +935,7 @@
         <div id="admin-payments-page" class="page">
             <h1>💸 Payment Status</h1>
             <div style="overflow-x: auto;">
-                <table class="admin-table"><thead><tr><th>User</th><th>Loan ID</th><th>Total Due</th><th>Paid</th><th>Balance</th><th>Last Payment</th></tr></thead><tbody id="payment-status-table"></tbody></table>
+                <table class="admin-table"><thead> <th>User</th><th>Loan ID</th><th>Total Due</th><th>Paid</th><th>Balance</th><th>Last Payment</th> </thead><tbody id="payment-status-table"></tbody> </table>
             </div>
             <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
         </div>
@@ -943,12 +944,13 @@
             <h1>⏰ Payment Reminders</h1>
             <button onclick="sendReminders()" class="success-btn">Send Reminders to All</button>
             <div style="overflow-x: auto; margin-top: 20px;">
-                <table class="admin-table"><thead><tr><th>User</th><th>Loan ID</th><th>Next Due</th><th>Days Left</th></tr></thead><tbody id="reminder-table"></tbody></table>
+                <table class="admin-table"><thead> <th>User</th><th>Loan ID</th><th>Next Due</th><th>Days Left</th> </thead><tbody id="reminder-table"></tbody> </table>
             </div>
             <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
         </div>
     </div>
 
+    <!-- Warning Modals -->
     <div id="warning-modal" class="warning-modal">
         <div class="warning-content">
             <h2>⚠️ Loan Confirmation</h2>
@@ -956,6 +958,17 @@
             <p style="margin-bottom: 20px; font-size: 0.9rem;">By submitting, you agree to the terms and conditions of the loan including interest rates and payment schedules.</p>
             <button id="confirm-submit" class="success-btn">Yes, Submit Application</button>
             <button id="cancel-submit" class="secondary-btn">Cancel</button>
+        </div>
+    </div>
+
+    <div id="payment-warning-modal" class="warning-modal">
+        <div class="warning-content">
+            <h2>⚠️ Payment Confirmation</h2>
+            <p style="margin: 20px 0;">Are you sure you want to submit this payment?</p>
+            <p style="margin-bottom: 20px; font-size: 0.9rem;">Please double-check your payment details, reference number, and receipt. This action cannot be undone.</p>
+            <div id="payment-details-preview" style="margin-bottom: 20px; padding: 10px; background: var(--input-bg); border-radius: 15px;"></div>
+            <button id="confirm-payment-submit" class="success-btn">Yes, Submit Payment</button>
+            <button id="cancel-payment-submit" class="secondary-btn">Cancel</button>
         </div>
     </div>
 
@@ -975,7 +988,7 @@
         const ADMIN_USERNAME = 'admin';
         const ADMIN_PASSWORD = 'bsit';
         
-        let regulations = { interestRate: 5, penaltyRate: 1, minLoan: 1000, maxLoan: 20000 };
+        let regulations = { interestRate: 5, penaltyRate: 1, minLoan: 1000, maxLoan: 2000 };
         let sessionSettings = { timeoutMinutes: 5, warningSeconds: 30 };
         let selectedMonth = null;
         let currentLoanId = null;
@@ -1076,7 +1089,6 @@
                     const remainingSeconds = (sessionSettings.timeoutMinutes * 60) - elapsedSeconds;
                     
                     if (remainingSeconds <= 0) {
-                        // Auto logout
                         clearInterval(sessionTimer);
                         logout();
                         alert('You have been automatically logged out due to inactivity.');
@@ -1086,7 +1098,6 @@
                     sessionTimeLeft = remainingSeconds;
                     updateSessionDisplay();
                     
-                    // Check for warning
                     if (!warningShown && sessionTimeLeft <= sessionSettings.warningSeconds) {
                         warningShown = true;
                         document.getElementById('session-timer')?.classList.add('warning');
@@ -1117,7 +1128,6 @@
             }
         }
 
-        // Activity listeners for session timer
         function addActivityListeners() {
             const events = ['click', 'keypress', 'mousemove', 'scroll', 'touchstart', 'touchmove'];
             events.forEach(event => {
@@ -1179,7 +1189,6 @@
             return '₱' + parseFloat(amount || 0).toLocaleString('en-PH', { minimumFractionDigits: 2 });
         }
 
-        // Document Upload Function
         window.uploadDocument = function(type, input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
@@ -1224,13 +1233,6 @@
             const nextBtn = document.getElementById('next-to-review');
             if (nextBtn) {
                 nextBtn.disabled = uploaded < 3;
-                if (uploaded === 3) {
-                    nextBtn.style.opacity = '1';
-                    nextBtn.style.cursor = 'pointer';
-                } else {
-                    nextBtn.style.opacity = '0.5';
-                    nextBtn.style.cursor = 'not-allowed';
-                }
             }
         }
 
@@ -1413,9 +1415,12 @@
                 if (user.loans) user.loans.forEach(loan => allLoans.push({ userName: user.name, email, ...loan }));
             });
             allLoans.sort((a,b) => new Date(b.appliedDate) - new Date(a.appliedDate)).slice(0,10).forEach(loan => {
-                tbody.innerHTML += `<tr><td>${loan.userName}</td><td>${formatCurrency(loan.amount)}</td><td>${loan.months}</td>
+                tbody.innerHTML += `<td>${loan.userName}</td>
+                    <td>${formatCurrency(loan.amount)}</td>
+                    <td>${loan.months}</td>
                     <td><span class="pill pill-${loan.status}">${loan.status}</span></td>
-                    <td>${loan.status === 'pending' ? `<button onclick="approveLoan('${loan.email}', '${loan.id}')" class="success-btn">Approve</button>` : '-'}</td></tr>`;
+                    <td>${loan.status === 'pending' ? `<button onclick="approveLoan('${loan.email}', '${loan.id}')" class="success-btn">Approve</button>` : '-'}</td>
+                 </tr>`;
             });
         }
 
@@ -1543,7 +1548,15 @@
 
             document.getElementById('loan-amount').addEventListener('input', function() {
                 const amount = parseFloat(this.value);
-                if (amount && amount >= 1000 && amount <= 20000) updatePaymentPreview();
+                const errorDiv = document.getElementById('loan-amount-error');
+                if (errorDiv) {
+                    if (amount && (amount < 1000 || amount > 2000)) {
+                        errorDiv.style.display = 'block';
+                    } else {
+                        errorDiv.style.display = 'none';
+                    }
+                }
+                if (amount && amount >= 1000 && amount <= 2000) updatePaymentPreview();
             });
             document.getElementById('payment-months').addEventListener('change', updatePaymentPreview);
             document.getElementById('personal-phone').addEventListener('input', function(e) {
@@ -1557,7 +1570,7 @@
             document.getElementById('next-to-personal').onclick = function() {
                 if (!document.getElementById('loan-type').value) { alert('Select loan type'); return; }
                 const amount = parseFloat(document.getElementById('loan-amount').value);
-                if (!amount || amount < 1000 || amount > 20000) { alert('Invalid amount'); return; }
+                if (!amount || amount < 1000 || amount > 2000) { alert('Loan amount must be between ₱1,000 and ₱2,000'); return; }
                 if (!document.getElementById('payment-months').value) { alert('Select payment period'); return; }
                 showPage('personal-info');
             };
@@ -1586,7 +1599,6 @@
             document.getElementById('edit-personal-details').onclick = () => showPage('personal-info');
             document.getElementById('back-to-documents').onclick = () => showPage('document-upload');
             
-            // Submit application with warning modal
             document.getElementById('submit-application').onclick = function() {
                 document.getElementById('warning-modal').style.display = 'flex';
             };
@@ -1598,6 +1610,15 @@
             
             document.getElementById('cancel-submit').onclick = function() {
                 document.getElementById('warning-modal').style.display = 'none';
+            };
+            
+            document.getElementById('confirm-payment-submit').onclick = function() {
+                document.getElementById('payment-warning-modal').style.display = 'none';
+                submitPaymentForApproval();
+            };
+            
+            document.getElementById('cancel-payment-submit').onclick = function() {
+                document.getElementById('payment-warning-modal').style.display = 'none';
             };
             
             document.getElementById('back-to-dashboard-from-status').onclick = () => showPage('dashboard');
@@ -1624,7 +1645,7 @@
         function updatePaymentPreview() {
             const amount = parseFloat(document.getElementById('loan-amount').value);
             const months = parseInt(document.getElementById('payment-months').value);
-            if (amount && months && amount >= 1000 && amount <= 20000) {
+            if (amount && months && amount >= 1000 && amount <= 2000) {
                 const calc = calculateMonthlyPayment(amount, months);
                 document.getElementById('monthly-payment-preview').textContent = formatCurrency(calc.monthlyPayment);
                 document.getElementById('total-months-preview').textContent = months;
@@ -1655,8 +1676,9 @@
                 const dueDate = new Date(appliedDate);
                 dueDate.setMonth(dueDate.getMonth() + i);
                 remaining -= calc.monthlyPayment;
-                tbody.innerHTML += `<tr><td>Month ${i}</td><td>${dueDate.toISOString().split('T')[0]}</td>
-                    <td>${formatCurrency(calc.monthlyPayment)}</td><td>${formatCurrency(Math.max(0, remaining))}</td></tr>`;
+                tbody.innerHTML += `叭<td>Month ${i}</td><td>${dueDate.toISOString().split('T')[0]}</td>
+                    <td>${formatCurrency(calc.monthlyPayment)}</td><td>${formatCurrency(Math.max(0, remaining))}</td>
+                  </tr>`;
             }
         }
 
@@ -1762,12 +1784,15 @@
                     }
                     actionBtn = `<button class="success-btn" style="padding:8px;" onclick="showPaymentModal(${i + 1}, ${totalDueMonth})">Pay Now</button>`;
                 }
-                tbody.innerHTML += `<tr><td>Month ${i + 1}</td><td>${month.dueDate}</td>
+                tbody.innerHTML += `<tr>
+                    <td>Month ${i + 1}</td>
+                    <td>${month.dueDate}</td>
                     <td>${formatCurrency(month.originalAmount)}</td>
                     <td class="${penalty > 0 ? 'pill-penalty' : ''}">${penalty > 0 ? formatCurrency(penalty) : '-'}</td>
                     <td>${formatCurrency(totalDueMonth)}</td>
                     <td><span class="pill ${statusClass}">${status}</span></td>
-                    <td>${actionBtn}</td></tr>`;
+                    <td>${actionBtn}</td>
+                </tr>`;
             }
         }
 
@@ -1792,18 +1817,35 @@
             document.getElementById('payment-reference').oninput = checkInputs;
         };
 
+        window.showPaymentConfirmation = function() {
+            const method = document.getElementById('payment-method-select').value;
+            const reference = document.getElementById('payment-reference').value;
+            const amount = document.getElementById('payment-amount').value;
+            
+            if (!method || !reference || !receiptFile) {
+                alert('Please complete all fields and upload receipt');
+                return;
+            }
+            
+            const preview = document.getElementById('payment-details-preview');
+            preview.innerHTML = `
+                <p><strong>Payment Method:</strong> ${method.toUpperCase()}</p>
+                <p><strong>Reference Number:</strong> ${reference}</p>
+                <p><strong>Amount:</strong> ${formatCurrency(parseFloat(amount))}</p>
+                <p><strong>Month:</strong> ${selectedMonth}</p>
+            `;
+            
+            document.getElementById('payment-warning-modal').style.display = 'flex';
+        };
+
         window.closePaymentModal = function() {
             document.getElementById('payment-modal').style.display = 'none';
             selectedMonth = null;
         };
 
-        window.submitPaymentForApproval = function() {
+        function submitPaymentForApproval() {
             const method = document.getElementById('payment-method-select').value;
             const reference = document.getElementById('payment-reference').value;
-            if (!method || !reference || !receiptFile) {
-                alert('Please complete all fields and upload receipt');
-                return;
-            }
             const activeLoan = userData.loans?.find(l => l.id === currentLoanId);
             if (activeLoan) {
                 const monthData = activeLoan.monthsData[selectedMonth - 1];
@@ -1830,7 +1872,7 @@
                 };
                 reader.readAsDataURL(receiptFile);
             }
-        };
+        }
 
         function previewReceipt(input) {
             if (input.files && input.files[0]) {
@@ -1869,10 +1911,16 @@
             tbody.innerHTML = '';
             Object.entries(usersData).forEach(([email, user]) => {
                 if (user.loans) user.loans.filter(l => l.status === 'pending').forEach(loan => {
-                    tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
-                        <td>${formatCurrency(loan.amount)}</td><td>${loan.months} months</td>
-                        <td><button onclick="approveLoan('${email}', '${loan.id}')" class="success-btn">Approve</button>
-                        <button onclick="rejectLoan('${email}', '${loan.id}')" class="danger-btn">Reject</button></td></tr>`;
+                    tbody.innerHTML += `<tr>
+                        <td>${user.name}</td>
+                        <td>${loan.id}</td>
+                        <td>${formatCurrency(loan.amount)}</td>
+                        <td>${loan.months} months</td>
+                        <td>
+                            <button onclick="approveLoan('${email}', '${loan.id}')" class="success-btn">Approve</button>
+                            <button onclick="rejectLoan('${email}', '${loan.id}')" class="danger-btn">Reject</button>
+                        </td>
+                    </tr>`;
                 });
             });
         }
@@ -1901,8 +1949,12 @@
                                 const next = unpaid[0];
                                 const dueDate = new Date(next.dueDate);
                                 const daysLeft = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
-                                tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
-                                    <td>${next.dueDate}</td><td>${daysLeft > 0 ? daysLeft : 0} days</td></tr>`;
+                                tbody.innerHTML += `<tr>
+                                    <td>${user.name}</td>
+                                    <td>${loan.id}</td>
+                                    <td>${next.dueDate}</td>
+                                    <td>${daysLeft > 0 ? daysLeft : 0} days</td>
+                                </tr>`;
                             }
                         }
                     });
@@ -1923,9 +1975,14 @@
                             const last = loan.paymentHistory[loan.paymentHistory.length - 1];
                             lastPayment = `Month ${last.month} - ${last.date}`;
                         }
-                        tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
-                            <td>${formatCurrency(due)}</td><td>${formatCurrency(paid)}</td>
-                            <td>${formatCurrency(due - paid)}</td><td>${lastPayment}</td></tr>`;
+                        tbody.innerHTML += `<tr>
+                            <td>${user.name}</td>
+                            <td>${loan.id}</td>
+                            <td>${formatCurrency(due)}</td>
+                            <td>${formatCurrency(paid)}</td>
+                            <td>${formatCurrency(due - paid)}</td>
+                            <td>${lastPayment}</td>
+                        </tr>`;
                     });
                 }
             });
@@ -1940,12 +1997,19 @@
                         if (loan.pendingPayments) {
                             loan.pendingPayments.forEach(payment => {
                                 if (payment.status === 'pending') {
-                                    tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
-                                        <td>Month ${payment.month}</td><td>${formatCurrency(payment.totalAmount)}</td>
-                                        <td>${payment.method}</td><td>${payment.reference}</td>
+                                    tbody.innerHTML += `<tr>
+                                        <td>${user.name}</td>
+                                        <td>${loan.id}</td>
+                                        <td>Month ${payment.month}</td>
+                                        <td>${formatCurrency(payment.totalAmount)}</td>
+                                        <td>${payment.method}</td>
+                                        <td>${payment.reference}</td>
                                         <td><button onclick="viewReceipt('${email}', '${loan.id}', ${payment.month})" class="secondary-btn">View</button></td>
-                                        <td><button onclick="approvePayment('${email}', '${loan.id}', ${payment.month})" class="success-btn">✓ Approve</button>
-                                        <button onclick="rejectPayment('${email}', '${loan.id}', ${payment.month})" class="danger-btn">✗ Reject</button></td></tr>`;
+                                        <td>
+                                            <button onclick="approvePayment('${email}', '${loan.id}', ${payment.month})" class="success-btn">✓ Approve</button>
+                                            <button onclick="rejectPayment('${email}', '${loan.id}', ${payment.month})" class="danger-btn">✗ Reject</button>
+                                        </td>
+                                    </tr>`;
                                 }
                             });
                         }
@@ -2031,10 +2095,7 @@
             const tbody = document.getElementById('profile-user-loans');
             tbody.innerHTML = '';
             if (user.loans) user.loans.forEach(loan => {
-                tbody.innerHTML += `叭<td>${loan.id}
-                     <td>${formatCurrency(loan.amount)}</td>
-                     <td><span class="pill pill-${loan.status}">${loan.status}</span></td>
-                  </tr>`;
+                tbody.innerHTML += `<tr><td>${loan.id}</td><td>${formatCurrency(loan.amount)}</td><td><span class="pill pill-${loan.status}">${loan.status}</span></td></tr>`;
             });
             document.getElementById('user-profile-display').style.display = 'block';
         };
@@ -2057,28 +2118,14 @@
         window.showAdminPage = showAdminPage;
         window.showPage = showPage;
         
-        // Close modals when clicking outside
         window.onclick = function(event) {
-            const warningModal = document.getElementById('warning-modal');
-            if (event.target === warningModal) {
-                warningModal.style.display = 'none';
-            }
-            const withdrawalModal = document.getElementById('withdrawal-modal');
-            if (event.target === withdrawalModal) {
-                withdrawalModal.style.display = 'none';
-            }
-            const paymentModal = document.getElementById('payment-modal');
-            if (event.target === paymentModal) {
-                paymentModal.style.display = 'none';
-            }
-            const transactionModal = document.getElementById('transaction-modal');
-            if (event.target === transactionModal) {
-                transactionModal.style.display = 'none';
-            }
-            const detailsModal = document.getElementById('transaction-details-modal');
-            if (event.target === detailsModal) {
-                detailsModal.style.display = 'none';
-            }
+            const modals = ['warning-modal', 'payment-warning-modal', 'withdrawal-modal', 'payment-modal', 'transaction-modal', 'transaction-details-modal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
         };
     </script>
 </body>
