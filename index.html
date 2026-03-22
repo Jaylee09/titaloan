@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>LoanSystem - Complete Loan Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --bg-gradient-start: #f8fafd;
+            --bg-gradient-end: #eef3fc;
+            --nav-bg: rgba(255, 255, 255, 0.9);
+            --nav-border: rgba(0, 79, 158, 0.2);
+            --nav-text: #144a70;
+            --page-bg: rgba(255, 255, 255, 0.7);
+            --page-border: rgba(0, 112, 243, 0.25);
+            --text-primary: #1a3b4e;
+            --text-secondary: #2a4f6e;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --input-bg: #ffffff;
+            --input-border: #cbdaf0;
+            --shadow-dark: rgba(0, 30, 60, 0.08);
+            --shadow-glow: #9ac4ff;
+            --stat-bg: linear-gradient(145deg, #ffffff, #f4faff);
+            --table-row: #f4faff;
+            --btn-secondary-bg: linear-gradient(145deg, #ecf3fe, #dfe9fc);
+            --btn-secondary-text: #1a4972;
+            --label-color: #246994;
+            --highlight-blue: #4895ef;
+            --wallet-bg: linear-gradient(135deg, #667eea, #764ba2);
+            --wallet-text: white;
+            --penalty-bg: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        body.dark-mode {
+            --bg-gradient-start: #0b1f33;
+            --bg-gradient-end: #1a3b55;
+            --nav-bg: rgba(10, 30, 50, 0.85);
+            --nav-border: rgba(100, 180, 255, 0.4);
+            --nav-text: #e6f0ff;
+            --page-bg: rgba(18, 34, 58, 0.75);
+            --page-border: #4895EF66;
+            --text-primary: #ffffff;
+            --text-secondary: #cfdfff;
+            --card-bg: rgba(18, 38, 65, 0.7);
+            --input-bg: rgba(12, 28, 50, 0.7);
+            --input-border: #2b4a73;
+            --shadow-dark: #00000080;
+            --shadow-glow: #4895EF;
+            --stat-bg: #1b3757;
+            --table-row: #142b47e6;
+            --btn-secondary-bg: linear-gradient(145deg, #253b55, #1c2d42);
+            --btn-secondary-text: #d5ecff;
+            --label-color: #cfdfff;
+            --wallet-bg: linear-gradient(135deg, #2c3e50, #3498db);
+            --penalty-bg: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        body {
+            background: linear-gradient(145deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.2s;
+        }
+
+        .penalty-notification {
+            background: var(--penalty-bg);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s;
+            cursor: pointer;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .session-timer {
+            background: var(--wallet-bg);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s;
+        }
+
+        .session-timer.warning {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .wallet-card {
+            background: var(--wallet-bg);
+            border-radius: 30px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wallet-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .wallet-balance {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 15px 0;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .wallet-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+
+        .wallet-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .wallet-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-3px);
+        }
+
+        .withdrawal-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .withdrawal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 50px;
+            border: 2px solid var(--page-border);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+        }
+
+        .transaction-history {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            background: var(--input-bg);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 5px solid #4895ef;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .transaction-item:hover {
+            transform: translateX(5px);
+        }
+
+        .document-upload-item {
+            background: var(--card-bg);
+            border: 2px dashed var(--input-border);
+            border-radius: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .document-upload-item.uploaded {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .document-upload-item .upload-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-pending {
+            background: #f39c12;
+            color: white;
+        }
+
+        .status-uploaded {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .document-preview {
+            max-width: 100px;
+            max-height: 100px;
+            margin-top: 10px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .progress-indicator {
+            width: 100%;
+            height: 10px;
+            background: var(--input-border);
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4895ef, #2ecc71);
+            transition: width 0.3s;
+        }
+
+        .upload-area {
+            border: 2px dashed #4895EF;
+            border-radius: 30px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 25px; }
+        .nav-bar { background: var(--nav-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--nav-border); box-shadow: 0 20px 40px -10px var(--shadow-dark); position: sticky; top: 0; z-index: 1000; width: 100%; }
+        .nav-container { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px 30px; }
+        .logo { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--text-primary), #4895ef); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .nav-links { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .nav-links a { color: var(--nav-text); text-decoration: none; padding: 10px 22px; border-radius: 40px; font-weight: 500; background: rgba(255,255,255,0.03); border: 1px solid var(--nav-border); transition: 0.2s; cursor: pointer; }
+        .nav-links a:hover { background: #4895EF; color: white; }
+        .theme-toggle { background: rgba(72, 149, 239, 0.15); border: 1px solid var(--nav-border); border-radius: 50px; padding: 8px 20px; font-size: 1rem; font-weight: 600; color: var(--nav-text); cursor: pointer; margin-left: 10px; }
+        .page { display: none; background: var(--page-bg); backdrop-filter: blur(15px); border-radius: 48px; padding: 45px; box-shadow: 0 40px 70px -10px var(--shadow-dark); margin-top: 20px; }
+        .active-page { display: block; }
+        h1, h2, h3 { color: var(--text-primary); font-weight: 600; }
+        h1 { border-bottom: 2px solid #4895EF; padding-bottom: 15px; font-size: 2.2rem; margin-bottom: 30px; display: inline-block; }
+        .form-group { margin-bottom: 28px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--label-color); text-transform: uppercase; font-size: 0.8rem; }
+        input, select, textarea { width: 100%; padding: 16px 20px; background: var(--input-bg); border: 2px solid var(--input-border); border-radius: 24px; font-size: 1rem; color: var(--text-primary); transition: all 0.2s; }
+        input:focus, select:focus, textarea:focus { border-color: #4895ef; outline: none; box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2); }
+        button { background: linear-gradient(145deg, #2667b5, #1b4f8b); color: white; border: none; padding: 16px 32px; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.15s; margin-right: 12px; margin-bottom: 12px; }
+        button:hover { background: linear-gradient(145deg, #3884db, #2563a5); transform: translateY(-2px); }
+        .secondary-btn { background: var(--btn-secondary-bg); color: var(--btn-secondary-text); }
+        .success-btn { background: linear-gradient(145deg, #11998e, #0a7a71); }
+        .danger-btn { background: linear-gradient(145deg, #d45f5f, #a54141); }
+        .login-form { max-width: 500px; margin: 0 auto; background: var(--page-bg); backdrop-filter: blur(20px); padding: 45px; border-radius: 60px; box-shadow: 0 50px 70px -20px var(--shadow-dark); border: 1px solid #6ea5ff; }
+        .login-error, .success-message { padding: 18px; border-radius: 40px; font-weight: 600; margin-bottom: 25px; display: none; }
+        .login-error { background: #ffe6e6; color: #b52b2b; border: 1px solid #ff8080; }
+        .success-message { background: #dcfce7; color: #0a5c3b; border: 1px solid #2ecc71; }
+        .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 35px; margin: 40px 0; }
+        .dashboard-card { background: var(--card-bg); border-radius: 40px; padding: 35px 25px; border: 1px solid #b3d0f0; box-shadow: 0 40px 50px -15px var(--shadow-dark); transition: 0.3s; cursor: pointer; }
+        .dashboard-card:hover { transform: translateY(-5px); }
+        .progress-steps { display: flex; justify-content: space-between; margin-bottom: 50px; position: relative; padding: 0 10px; }
+        .progress-steps:before { content: ''; position: absolute; top: 25px; left: 30px; right: 30px; height: 6px; background: linear-gradient(90deg, #4895EF, #b0dcff); border-radius: 6px; z-index: 1; }
+        .step { background: var(--card-bg); border-radius: 50%; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.5rem; position: relative; z-index: 3; border: 4px solid #4895EF; color: var(--text-primary); transition: 0.25s; }
+        .step.active { background: #4895EF; color: white; transform: scale(1.2); }
+        .step.completed { background: #10b981; border-color: #6fffd0; }
+        .admin-table, .payment-schedule-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+        .admin-table th, .payment-schedule-table th { background: #1e4174; color: white; padding: 18px 12px; border-radius: 30px 30px 10px 10px; }
+        .admin-table td, .payment-schedule-table td { background: var(--table-row); padding: 18px 12px; border-radius: 20px; border: 1px solid #b3cef0; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; margin-bottom: 50px; }
+        .stat-card { background: var(--stat-bg); border-radius: 40px; padding: 35px 20px; box-shadow: 0 35px 45px -12px var(--shadow-dark); border: 1px solid #9bc0f0; text-align: center; }
+        .stat-number { font-size: 48px; font-weight: 800; color: #1e4f8a; }
+        body.dark-mode .stat-number { color: #b3dbff; }
+        .pill { padding: 8px 22px; border-radius: 60px; font-weight: 700; display: inline-block; text-transform: uppercase; }
+        .pill-pending { background: #f39c12; color: #2d1f00; }
+        .pill-approved { background: #2ecc71; color: #003015; }
+        .pill-rejected { background: #e74c3c; color: #340000; }
+        .pill-paid { background: #1abc9c; color: #00261c; }
+        .pill-approval { background: #3498db; color: #002b49; }
+        .pill-penalty { background: #e74c3c; color: white; }
+        .pill-warning { background: #f39c12; color: white; }
+        .loan-item { background: var(--card-bg); border-radius: 40px; padding: 25px; margin-bottom: 20px; border-left: 10px solid #4895EF; }
+        .currency-symbol { position: absolute; margin-top: 14px; margin-left: 20px; color: #4895EF; font-weight: 700; font-size: 1.3rem; }
+        .amount-input { padding-left: 50px !important; }
+        .payment-method-card { background: var(--card-bg); border: 2px solid #8bb9f0; border-radius: 30px; padding: 25px 10px; transition: 0.15s; cursor: pointer; text-align: center; margin: 5px; }
+        .payment-method-card.selected { border-color: #f0c45a; background: #e6f0ff; transform: scale(1.02); }
+        .payment-methods { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0; }
+        .receipt-upload-area { border: 2px dashed #4895EF; border-radius: 30px; padding: 30px; text-align: center; margin: 20px 0; background: var(--card-bg); cursor: pointer; }
+        .receipt-preview { max-width: 200px; max-height: 200px; margin: 10px auto; border-radius: 10px; display: none; }
+        .warning-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+        .warning-content {
+            background: var(--card-bg);
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 40px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .page { padding: 20px; }
+            h1 { font-size: 1.8rem; }
+            .wallet-balance { font-size: 2rem; }
+            .dashboard-cards { grid-template-columns: 1fr; gap: 15px; }
+            .admin-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .nav-links a { padding: 6px 12px; font-size: 0.9rem; }
+            .payment-methods { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <div class="nav-bar" id="navBar">
+        <div class="nav-container">
+            <div class="logo">LoanSystem</div>
+            <div class="nav-links" id="navLinks">
+                <span class="theme-toggle" id="themeToggle">🌓 Light/Dark</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- LOGIN PAGE -->
+        <div id="login-page" class="page active-page">
+            <h1>Welcome Back! 👋</h1>
+            <div class="login-form">
+                <div class="login-error" id="login-error">Invalid email or password.</div>
+                <div class="success-message" id="register-success">Registration successful! Please login.</div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                <button id="login-btn" style="width: 100%;">Login</button>
+                <div style="text-align: center; margin-top: 25px;">
+                    <button class="secondary-btn" id="register-link">Create New Account</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- REGISTER PAGE -->
+        <div id="register-page" class="page">
+            <h1>Create Account ✨</h1>
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="reg-name" placeholder="Full name">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="reg-email" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <label>Phone (11 digits)</label>
+                    <input type="tel" id="reg-phone" placeholder="09123456789" maxlength="11">
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" id="reg-dob">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea id="reg-address" rows="2" placeholder="Complete address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="reg-password" placeholder="Create password">
+                    <small>8+ chars, uppercase, lowercase, number, special character</small>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="reg-confirm-password" placeholder="Confirm password">
+                </div>
+                <div class="form-group" style="display: flex; align-items: center;">
+                    <input type="checkbox" id="reg-terms" style="width: auto; margin-right: 10px;">
+                    <label style="display: inline; margin: 0;">I accept Terms & Conditions</label>
+                </div>
+                <button id="register-btn" disabled>Register</button>
+                <button class="secondary-btn" id="back-to-login">Back to Login</button>
+            </div>
+        </div>
+        
+        <!-- USER DASHBOARD -->
+        <div id="dashboard-page" class="page">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h1>Welcome, <span id="user-name">User</span>! 🌟</h1>
+                
+            </div>
+            
+            <div class="wallet-card">
+                <h2 style="color: white;">💼 My Wallet</h2>
+                <div class="wallet-balance" id="wallet-balance">₱0.00</div>
+                <div class="wallet-actions">
+                    <button class="wallet-btn" onclick="showWithdrawalModal()">💰 Withdraw</button>
+                    <button class="wallet-btn" onclick="showTransactionHistory()">📊 History</button>
+                </div>
+            </div>
+            
+            <div id="penalty-notification-area"></div>
+            
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <h3>Apply for Loan</h3>
+                    <p>Start a new loan application</p>
+                    <button id="apply-new-loan" class="success-btn">Apply Now</button>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Loan Status</h3>
+                    <p>Track your applications</p>
+                    <button id="view-loan-status">View Status</button>
+                </div>
+            </div>
+            
+            <h3>Your Recent Applications</h3>
+            <div id="loan-list"></div>
+            
+            <div id="user-reminder" style="display: none; margin-top: 20px; padding: 15px; border-left: 5px solid #fbbf24; background: var(--card-bg); border-radius: 20px;">
+                <h3>⏰ Payment Reminder <span id="reminder-count">0</span></h3>
+                <div id="reminder-details"></div>
+            </div>
+        </div>
+        
+        <!-- Withdrawal Modal -->
+        <div id="withdrawal-modal" class="withdrawal-modal">
+            <div class="withdrawal-content">
+                <h2>Withdraw Funds</h2>
+                <div class="form-group">
+                    <label>Available Balance</label>
+                    <div style="font-size: 2rem; font-weight: bold; color: #4895ef;" id="withdraw-available">₱0.00</div>
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <div style="position: relative;">
+                        <span class="currency-symbol">₱</span>
+                        <input type="number" id="withdraw-amount" class="amount-input" min="100" step="100" placeholder="Enter amount">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Method</label>
+                    <select id="withdraw-method">
+                        <option value="">Select Method</option>
+                        <option value="gcash">GCash</option>
+                        <option value="paymaya">PayMaya</option>
+                        <option value="bank">Bank Transfer</option>
+                    </select>
+                </div>
+                <div class="form-group" id="withdraw-account-details" style="display: none;">
+                    <label>Reference Number</label>
+                    <input type="text" id="withdraw-reference" placeholder="Enter reference number">
+                </div>
+                <button class="secondary-btn" onclick="closeWithdrawalModal()">Cancel</button>
+                <button class="success-btn" onclick="processWithdrawal()">Withdraw</button>
+            </div>
+        </div>
+
+        <!-- Transaction History Modal -->
+        <div id="transaction-modal" class="withdrawal-modal">
+            <div class="withdrawal-content">
+                <h2>Transaction History</h2>
+                <div class="transaction-history" id="transaction-list"></div>
+                <button class="secondary-btn" onclick="closeTransactionModal()">Close</button>
+            </div>
+        </div>
+
+        <!-- Transaction Details Modal -->
+        <div id="transaction-details-modal" class="withdrawal-modal">
+            <div class="withdrawal-content">
+                <h2>Transaction Details</h2>
+                <div id="transaction-details-content"></div>
+                <button class="secondary-btn" onclick="closeTransactionDetailsModal()">Close</button>
+            </div>
+        </div>
+        
+        <!-- LOAN APPLICATION - STEP 1 -->
+        <div id="loan-application-page" class="page">
+            <h1>Loan Application</h1>
+            <div class="progress-steps">
+                <div class="step active">1</div>
+                <div class="step">2</div>
+                <div class="step">3</div>
+                <div class="step">4</div>
+            </div>
+            
+            <h2>Loan Details</h2>
+            <div class="form-group">
+                <label>Loan Type</label>
+                <select id="loan-type">
+                    <option value="">Select Loan Type</option>
+                    <option value="personal">Personal Loan</option>
+                    <option value="business">Business Loan</option>
+                    <option value="emergency">Emergency Loan</option>
+                    <option value="education">Education Loan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Loan Amount (₱)</label>
+                <div style="position: relative;">
+                    <span class="currency-symbol">₱</span>
+                    <input type="number" id="loan-amount" class="amount-input" placeholder="1,000 - 20,000" min="1000" max="20000">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Payment Period (Months)</label>
+                <select id="payment-months">
+                    <option value="">Select Months</option>
+                    <option value="1">1 Month</option>
+                    <option value="2">2 Months</option>
+                    <option value="3">3 Months</option>
+                    <option value="4">4 Months</option>
+                    <option value="5">5 Months</option>
+                    <option value="6">6 Months</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Purpose of Loan</label>
+                <textarea id="loan-purpose" rows="3" placeholder="Describe the purpose..."></textarea>
+            </div>
+            
+            <div id="payment-preview" style="display: none; padding: 20px; margin: 20px 0; background: var(--card-bg); border-radius: 20px;">
+                <h4>Payment Preview</h4>
+                <p><strong>Monthly Payment:</strong> <span id="monthly-payment-preview"></span></p>
+                <p><strong>Total Months:</strong> <span id="total-months-preview"></span></p>
+                <p><strong>Total Interest:</strong> <span id="total-interest-preview"></span></p>
+                <p><strong>Total Payment:</strong> <span id="total-payment-preview"></span></p>
+            </div>
+            
+            <button class="secondary-btn" id="cancel-application">Cancel</button>
+            <button id="next-to-personal">Next →</button>
+        </div>
+        
+        <!-- PERSONAL INFO - STEP 2 -->
+        <div id="personal-info-page" class="page">
+            <h1>Personal Information</h1>
+            <div class="progress-steps">
+                <div class="step completed">1</div>
+                <div class="step active">2</div>
+                <div class="step">3</div>
+                <div class="step">4</div>
+            </div>
+            
+            <h2>Personal Details</h2>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="personal-name" readonly>
+            </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="personal-dob" readonly>
+            </div>
+            <div class="form-group">
+                <label>Gender</label>
+                <select id="personal-gender">
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Phone (11 digits)</label>
+                <input type="tel" id="personal-phone" maxlength="11" placeholder="11 digits">
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <textarea id="personal-address" rows="2" readonly></textarea>
+            </div>
+            
+            <h2>Financial Information</h2>
+            <div class="form-group">
+                <label>Employment Status</label>
+                <select id="employment-status">
+                    <option value="">Select Status</option>
+                    <option value="employed">Employed</option>
+                    <option value="self-employed">Self-Employed</option>
+                    <option value="unemployed">Unemployed</option>
+                    <option value="student">Student</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Monthly Income (₱)</label>
+                <div style="position: relative;">
+                    <span class="currency-symbol">₱</span>
+                    <input type="number" id="monthly-income" class="amount-input" min="0">
+                </div>
+            </div>
+            
+            <button class="secondary-btn" id="back-to-loan-details">← Back</button>
+            <button id="next-to-documents">Next →</button>
+        </div>
+        
+        <!-- DOCUMENT UPLOAD - STEP 3 -->
+        <div id="document-upload-page" class="page">
+            <h1>Document Upload</h1>
+            <div class="progress-steps">
+                <div class="step completed">1</div>
+                <div class="step completed">2</div>
+                <div class="step active">3</div>
+                <div class="step">4</div>
+            </div>
+            
+            <h2>Upload Required Documents</h2>
+            <p style="margin-bottom: 20px;">Please upload all three documents to proceed</p>
+            
+            <div class="progress-indicator">
+                <div class="progress-bar" id="upload-progress" style="width: 0%;"></div>
+            </div>
+            
+            <!-- Government ID Upload -->
+            <div class="document-upload-item" id="doc-id-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3>📇 Government ID</h3>
+                    <span id="id-status-badge" class="upload-status status-pending">Pending</span>
+                </div>
+                <div class="upload-area" onclick="document.getElementById('id-upload').click()">
+                    <p>📎 Click to upload Government ID</p>
+                    <p style="font-size: 0.9rem;">Supported: JPG, PNG, PDF (max 2MB)</p>
+                    <input type="file" id="id-upload" accept=".jpg,.jpeg,.png,.pdf" style="display: none;" onchange="uploadDocument('id', this)">
+                </div>
+                <img id="id-preview" class="document-preview" src="">
+            </div>
+            
+            <!-- Proof of Income Upload -->
+            <div class="document-upload-item" id="doc-income-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3>💰 Proof of Income</h3>
+                    <span id="income-status-badge" class="upload-status status-pending">Pending</span>
+                </div>
+                <div class="upload-area" onclick="document.getElementById('income-upload').click()">
+                    <p>📎 Click to upload Proof of Income</p>
+                    <p style="font-size: 0.9rem;">Supported: JPG, PNG, PDF (max 2MB)</p>
+                    <input type="file" id="income-upload" accept=".jpg,.jpeg,.png,.pdf" style="display: none;" onchange="uploadDocument('income', this)">
+                </div>
+                <img id="income-preview" class="document-preview" src="">
+            </div>
+            
+            <!-- Proof of Address Upload -->
+            <div class="document-upload-item" id="doc-address-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3>🏠 Proof of Address</h3>
+                    <span id="address-status-badge" class="upload-status status-pending">Pending</span>
+                </div>
+                <div class="upload-area" onclick="document.getElementById('address-upload').click()">
+                    <p>📎 Click to upload Proof of Address</p>
+                    <p style="font-size: 0.9rem;">Supported: JPG, PNG, PDF (max 2MB)</p>
+                    <input type="file" id="address-upload" accept=".jpg,.jpeg,.png,.pdf" style="display: none;" onchange="uploadDocument('address', this)">
+                </div>
+                <img id="address-preview" class="document-preview" src="">
+            </div>
+            
+            <div class="btn-group" style="margin-top: 30px;">
+                <button class="secondary-btn" id="back-to-personal">← Back</button>
+                <button id="next-to-review" disabled>Next →</button>
+            </div>
+        </div>
+        
+        <!-- REVIEW PAGE - STEP 4 -->
+        <div id="review-page" class="page">
+            <h1>Review Application</h1>
+            <div class="progress-steps">
+                <div class="step completed">1</div>
+                <div class="step completed">2</div>
+                <div class="step completed">3</div>
+                <div class="step active">4</div>
+            </div>
+            
+            <div style="padding: 20px; background: var(--card-bg); border-radius: 20px; margin-bottom: 20px;">
+                <h3>Loan Details</h3>
+                <p><strong>Type:</strong> <span id="review-loan-type"></span></p>
+                <p><strong>Amount:</strong> <span id="review-loan-amount"></span></p>
+                <p><strong>Months:</strong> <span id="review-months"></span></p>
+                <p><strong>Monthly Payment:</strong> <span id="review-monthly-payment"></span></p>
+                <button class="secondary-btn" id="edit-loan-details">Edit</button>
+            </div>
+            
+            <div style="padding: 20px; background: var(--card-bg); border-radius: 20px; margin-bottom: 20px;">
+                <h3>Personal Information</h3>
+                <p><strong>Name:</strong> <span id="review-name"></span></p>
+                <p><strong>Phone:</strong> <span id="review-phone"></span></p>
+                <p><strong>Employment:</strong> <span id="review-employment"></span></p>
+                <p><strong>Monthly Income:</strong> <span id="review-income"></span></p>
+                <button class="secondary-btn" id="edit-personal-details">Edit</button>
+            </div>
+            
+            <h3>Payment Schedule</h3>
+            <div style="overflow-x: auto;">
+                <table class="payment-schedule-table">
+                    <thead><tr><th>Month</th><th>Due Date</th><th>Amount</th><th>Remaining</th></tr></thead>
+                    <tbody id="payment-schedule-preview"></tbody>
+                </table>
+            </div>
+            
+            <button class="secondary-btn" id="back-to-documents">← Back</button>
+            <button id="submit-application" class="success-btn">Submit Application</button>
+        </div>
+        
+        <!-- APPLICATION STATUS PAGE -->
+        <div id="application-status-page" class="page">
+            <h1>Your Applications</h1>
+            <div id="loan-status-container"></div>
+            <button class="secondary-btn" id="back-to-dashboard-from-status">← Back</button>
+        </div>
+        
+        <!-- REPAYMENT DASHBOARD -->
+        <div id="repayment-dashboard-page" class="page">
+            <h1>Repayment Dashboard</h1>
+            <div id="active-loan-summary" style="padding: 20px; background: var(--card-bg); border-radius: 20px; margin-bottom: 20px;"></div>
+            <div id="penalty-details"></div>
+            
+            <h3>Payment Schedule</h3>
+            <div style="overflow-x: auto;">
+                <table class="payment-schedule-table">
+                    <thead><tr><th>Month</th><th>Due Date</th><th>Original</th><th>Penalty</th><th>Total Due</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody id="payment-history-table"></tbody>
+                </table>
+            </div>
+            
+            <!-- Payment Modal -->
+            <div id="payment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
+                <div style="max-width: 500px; margin: 50px auto; padding: 30px; background: var(--card-bg); border-radius: 30px;">
+                    <h3>Make Payment</h3>
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select id="payment-method-select">
+                            <option value="">Select Method</option>
+                            <option value="gcash">GCash</option>
+                            <option value="paymaya">PayMaya</option>
+                            <option value="bank">Bank Transfer</option>
+                            <option value="cash">Cash</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Reference Number</label>
+                        <input type="text" id="payment-reference" placeholder="Enter reference number">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Upload Receipt</label>
+                        <div class="receipt-upload-area" onclick="document.getElementById('receipt-file').click()">
+                            <p>📎 Click to upload receipt image</p>
+                            <input type="file" id="receipt-file" accept="image/*" style="display: none;" onchange="previewReceipt(this)">
+                        </div>
+                        <img id="receipt-preview" class="receipt-preview">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Amount to Pay</label>
+                        <div style="position: relative;">
+                            <span class="currency-symbol">₱</span>
+                            <input type="number" id="payment-amount" class="amount-input" readonly>
+                        </div>
+                    </div>
+                    
+                    <button class="secondary-btn" onclick="closePaymentModal()">Cancel</button>
+                    <button class="success-btn" onclick="submitPaymentForApproval()" id="submit-payment-btn" disabled>Submit Payment</button>
+                </div>
+            </div>
+            
+            <button class="secondary-btn" id="back-to-dashboard-from-repayment">← Back</button>
+        </div>
+        
+        <!-- SETTINGS PAGE -->
+        <div id="settings-page" class="page">
+            <h1>Account Settings</h1>
+            <div style="padding: 20px; background: var(--card-bg); border-radius: 20px;">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="settings-name">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="settings-email">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="settings-phone" maxlength="11">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea id="settings-address" rows="2"></textarea>
+                </div>
+                <button id="save-settings" class="success-btn">Save Changes</button>
+                <button class="secondary-btn" id="back-to-dashboard-from-settings">← Back</button>
+            </div>
+        </div>
+        
+        <!-- ADMIN PAGES -->
+        <div id="admin-dashboard-page" class="page">
+            <h1>Admin Dashboard</h1>
+            <div class="admin-grid">
+                <div class="stat-card"><div class="stat-number" id="total-users">0</div><div>Total Users</div></div>
+                <div class="stat-card"><div class="stat-number" id="total-loans">0</div><div>Total Loans</div></div>
+                <div class="stat-card"><div class="stat-number" id="pending-loans">0</div><div>Pending Approvals</div></div>
+                <div class="stat-card"><div class="stat-number" id="pending-payments">0</div><div>Pending Payments</div></div>
+                <div class="stat-card"><div class="stat-number" id="total-wallet-balance">₱0</div><div>Total Wallet Balance</div></div>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px;">
+                <button onclick="showAdminPage('regulation')">⚖️ Regulation</button>
+                <button onclick="showAdminPage('payments')">💸 Payments</button>
+                <button onclick="showAdminPage('profile')">👤 Users</button>
+                <button onclick="showAdminPage('payment-approval')" class="success-btn">📄 Receipts</button>
+                <button onclick="showAdminPage('session-settings')" class="secondary-btn">⏰ Session</button>
+                <button onclick="showAdminPage('validation')" class="secondary-btn">✅ Loan Validation</button>
+            </div>
+            <h3>Recent Loan Applications</h3>
+            <div style="overflow-x: auto;">
+                <table class="admin-table"><thead><tr><th>User</th><th>Amount</th><th>Months</th><th>Status</th><th>Action</th></tr></thead><tbody id="admin-recent-loans"></tbody></table>
+            </div>
+        </div>
+        
+        <div id="admin-regulation-page" class="page">
+            <h1>⚖️ Regulation Settings</h1>
+            <div style="padding: 20px; background: var(--card-bg); border-radius: 20px;">
+                <div class="form-group"><label>Interest Rate (%)</label><input type="number" id="interest-rate" value="5" min="1" max="20"></div>
+                <div class="form-group"><label>Penalty Rate (% per day)</label><input type="number" id="penalty-rate" value="1" min="1" max="10"></div>
+                <div class="form-group"><label>Min Loan (₱)</label><input type="number" id="min-loan" value="1000"></div>
+                <div class="form-group"><label>Max Loan (₱)</label><input type="number" id="max-loan" value="20000"></div>
+                <button onclick="saveRegulations()" class="success-btn">Save</button>
+                <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
+            </div>
+        </div>
+
+        <div id="admin-session-settings-page" class="page">
+            <h1>⏰ Session Settings</h1>
+            <div style="padding: 20px; background: var(--card-bg); border-radius: 20px;">
+                <div class="form-group"><label>Timeout (minutes)</label><input type="number" id="session-timeout" min="1" max="60" value="5"></div>
+                <div class="form-group"><label>Warning (seconds)</label><input type="number" id="warning-time" min="10" max="120" value="30"></div>
+                <button onclick="saveSessionSettings()" class="success-btn">Save</button>
+                <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
+            </div>
+        </div>
+        
+        <div id="admin-validation-page" class="page">
+            <h1>✅ Loan Validation</h1>
+            <div style="overflow-x: auto;">
+                <table class="admin-table"><thead><tr><th>User</th><th>Loan ID</th><th>Amount</th><th>Months</th><th>Actions</th></tr></thead><tbody id="pending-validation-table"></tbody></table>
+            </div>
+            <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
+        </div>
+        
+        <div id="admin-payment-approval-page" class="page">
+            <h1>📄 Receipt Approval</h1>
+            <p>Review and approve payment receipts submitted by clients</p>
+            <div style="overflow-x: auto;">
+                <table class="admin-table"><thead><tr><th>User</th><th>Loan ID</th><th>Month</th><th>Amount</th><th>Method</th><th>Reference</th><th>Receipt</th><th>Actions</th></tr></thead><tbody id="payment-approval-table"></tbody></table>
+            </div>
+            <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
+        </div>
+        
+        <div id="admin-profile-page" class="page">
+            <h1>👤 User Profiles</h1>
+            <div class="form-group"><select id="user-selector" onchange="loadUserProfile()"><option value="">-- Select User --</option></select></div>
+            <div id="user-profile-display" style="display: none; padding: 20px; background: var(--card-bg); border-radius: 20px;">
+                <h3 id="profile-user-name"></h3>
+                <p><strong>Email:</strong> <span id="profile-user-email"></span></p>
+                <p><strong>Phone:</strong> <span id="profile-user-phone"></span></p>
+                <p><strong>Address:</strong> <span id="profile-user-address"></span></p>
+                <p><strong>Wallet:</strong> <span id="profile-wallet-balance"></span></p>
+                <h4>Loan History</h4>
+                <div style="overflow-x: auto;"><table class="admin-table"><thead><tr><th>Loan ID</th><th>Amount</th><th>Status</th></tr></thead><tbody id="profile-user-loans"></tbody></table></div>
+            </div>
+            <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
+        </div>
+        
+        <div id="admin-payments-page" class="page">
+            <h1>💸 Payment Status</h1>
+            <div style="overflow-x: auto;">
+                <table class="admin-table"><thead><tr><th>User</th><th>Loan ID</th><th>Total Due</th><th>Paid</th><th>Balance</th><th>Last Payment</th></tr></thead><tbody id="payment-status-table"></tbody></table>
+            </div>
+            <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
+        </div>
+        
+        <div id="admin-reminders-page" class="page">
+            <h1>⏰ Payment Reminders</h1>
+            <button onclick="sendReminders()" class="success-btn">Send Reminders to All</button>
+            <div style="overflow-x: auto; margin-top: 20px;">
+                <table class="admin-table"><thead><tr><th>User</th><th>Loan ID</th><th>Next Due</th><th>Days Left</th></tr></thead><tbody id="reminder-table"></tbody></table>
+            </div>
+            <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
+        </div>
+    </div>
+
+    <div id="warning-modal" class="warning-modal">
+        <div class="warning-content">
+            <h2>⚠️ Loan Confirmation</h2>
+            <p style="margin: 20px 0;">Are you sure you want to submit this loan application?</p>
+            <p style="margin-bottom: 20px; font-size: 0.9rem;">By submitting, you agree to the terms and conditions of the loan including interest rates and payment schedules.</p>
+            <button id="confirm-submit" class="success-btn">Yes, Submit Application</button>
+            <button id="cancel-submit" class="secondary-btn">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== GLOBAL DATA ==========
+        let usersData = {};
+        let currentUser = null;
+        let currentRole = 'user';
+        let userData = {
+            isLoggedIn: false,
+            name: '', email: '', phone: '', dob: '', gender: '', address: '', employment: '', income: 0,
+            loans: [],
+            wallet: { balance: 0, transactions: [] },
+            documents: { id: null, income: null, address: null }
+        };
+        
+        const ADMIN_USERNAME = 'admin';
+        const ADMIN_PASSWORD = 'bsit';
+        
+        let regulations = { interestRate: 5, penaltyRate: 1, minLoan: 1000, maxLoan: 20000 };
+        let sessionSettings = { timeoutMinutes: 5, warningSeconds: 30 };
+        let selectedMonth = null;
+        let currentLoanId = null;
+        let receiptFile = null;
+        let sessionTimer = null;
+        let sessionTimeLeft = 0;
+        let warningShown = false;
+        let lastActivityTime = Date.now();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllData();
+            setupEventListeners();
+            initTheme();
+            startSessionTimer();
+            updatePenaltyNotifications();
+            setInterval(() => updatePenaltyNotifications(), 60000);
+        });
+
+        function initTheme() {
+            document.getElementById('themeToggle')?.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+            });
+        }
+
+        function loadAllData() {
+            const saved = localStorage.getItem('loanSystemUsers');
+            if (saved) {
+                usersData = JSON.parse(saved);
+                Object.keys(usersData).forEach(email => {
+                    if (!usersData[email].loans) usersData[email].loans = [];
+                    if (!usersData[email].wallet) usersData[email].wallet = { balance: 0, transactions: [] };
+                    if (!usersData[email].documents) usersData[email].documents = { id: null, income: null, address: null };
+                });
+            }
+            
+            const savedRegs = localStorage.getItem('loanSystemRegulations');
+            if (savedRegs) regulations = JSON.parse(savedRegs);
+            const savedSession = localStorage.getItem('loanSystemSessionSettings');
+            if (savedSession) sessionSettings = JSON.parse(savedSession);
+            
+            const savedUser = localStorage.getItem('loanSystemCurrentUser');
+            const savedRole = localStorage.getItem('loanSystemCurrentRole');
+            
+            if (savedUser && savedRole) {
+                if (savedRole === 'admin' && savedUser === 'admin') {
+                    currentUser = 'admin'; currentRole = 'admin';
+                    showAdminPage('dashboard');
+                } else if (savedRole === 'user' && usersData[savedUser]) {
+                    currentUser = savedUser; currentRole = 'user';
+                    userData = { ...usersData[savedUser], isLoggedIn: true };
+                    if (!userData.wallet) userData.wallet = { balance: 0, transactions: [] };
+                    if (!userData.documents) userData.documents = { id: null, income: null, address: null };
+                    showPage('dashboard');
+                } else showPage('login');
+            } else showPage('login');
+            updateNavBar();
+        }
+
+        function saveUserSession() {
+            if (currentRole === 'user' && currentUser) {
+                usersData[currentUser] = { ...userData, password: usersData[currentUser]?.password || '' };
+                localStorage.setItem('loanSystemUsers', JSON.stringify(usersData));
+                localStorage.setItem('loanSystemCurrentUser', currentUser);
+                localStorage.setItem('loanSystemCurrentRole', 'user');
+            } else if (currentRole === 'admin') {
+                localStorage.setItem('loanSystemCurrentUser', 'admin');
+                localStorage.setItem('loanSystemCurrentRole', 'admin');
+            }
+        }
+
+        function saveSessionSettings() {
+            sessionSettings = {
+                timeoutMinutes: parseInt(document.getElementById('session-timeout').value),
+                warningSeconds: parseInt(document.getElementById('warning-time').value)
+            };
+            localStorage.setItem('loanSystemSessionSettings', JSON.stringify(sessionSettings));
+            alert('Session settings saved!');
+            showAdminPage('dashboard');
+        }
+
+        function updateLastActivity() {
+            lastActivityTime = Date.now();
+            if (currentRole === 'user' && currentUser) {
+                resetSessionTimer();
+            }
+        }
+
+        function startSessionTimer() {
+            if (currentRole === 'user' && currentUser) {
+                if (sessionTimer) clearInterval(sessionTimer);
+                sessionTimeLeft = sessionSettings.timeoutMinutes * 60;
+                warningShown = false;
+                updateSessionDisplay();
+                
+                sessionTimer = setInterval(() => {
+                    const now = Date.now();
+                    const elapsedSeconds = Math.floor((now - lastActivityTime) / 1000);
+                    const remainingSeconds = (sessionSettings.timeoutMinutes * 60) - elapsedSeconds;
+                    
+                    if (remainingSeconds <= 0) {
+                        // Auto logout
+                        clearInterval(sessionTimer);
+                        logout();
+                        alert('You have been automatically logged out due to inactivity.');
+                        return;
+                    }
+                    
+                    sessionTimeLeft = remainingSeconds;
+                    updateSessionDisplay();
+                    
+                    // Check for warning
+                    if (!warningShown && sessionTimeLeft <= sessionSettings.warningSeconds) {
+                        warningShown = true;
+                        document.getElementById('session-timer')?.classList.add('warning');
+                        const warnUser = confirm(`⚠️ Warning! Your session will expire in ${sessionSettings.warningSeconds} seconds due to inactivity.\n\nClick OK to stay logged in.`);
+                        if (warnUser) {
+                            updateLastActivity();
+                        }
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetSessionTimer() {
+            if (currentRole === 'user' && currentUser) {
+                lastActivityTime = Date.now();
+                warningShown = false;
+                document.getElementById('session-timer')?.classList.remove('warning');
+                updateSessionDisplay();
+            }
+        }
+
+        function updateSessionDisplay() {
+            const timer = document.getElementById('session-timer');
+            if (timer) {
+                const minutes = Math.floor(sessionTimeLeft / 60);
+                const seconds = sessionTimeLeft % 60;
+                timer.innerHTML = `⏰ ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            }
+        }
+
+        // Activity listeners for session timer
+        function addActivityListeners() {
+            const events = ['click', 'keypress', 'mousemove', 'scroll', 'touchstart', 'touchmove'];
+            events.forEach(event => {
+                document.addEventListener(event, updateLastActivity);
+            });
+        }
+        addActivityListeners();
+
+        function calculatePenalty(dueDate, amount) {
+            const today = new Date();
+            const due = new Date(dueDate);
+            if (today <= due) return 0;
+            const daysLate = Math.floor((today - due) / (1000 * 60 * 60 * 24));
+            if (daysLate <= 0) return 0;
+            return amount * (regulations.penaltyRate / 100) * daysLate;
+        }
+
+        function calculateMonthlyPayment(amount, months) {
+            const totalInterest = amount * (regulations.interestRate / 100);
+            const totalPayment = amount + totalInterest;
+            return { monthlyPayment: totalPayment / months, totalInterest, totalPayment };
+        }
+
+        function updatePenaltyNotifications() {
+            if (currentRole !== 'user' || !userData.loans) return;
+            const penaltyArea = document.getElementById('penalty-notification-area');
+            if (!penaltyArea) return;
+            penaltyArea.innerHTML = '';
+            const now = new Date();
+            userData.loans.forEach(loan => {
+                if (loan.status !== 'approved') return;
+                loan.monthsData?.forEach((month, idx) => {
+                    if (month.paid) return;
+                    const dueDate = new Date(month.dueDate);
+                    const daysLate = Math.floor((now - dueDate) / (1000 * 60 * 60 * 24));
+                    if (daysLate > 0) {
+                        const penalty = calculatePenalty(month.dueDate, month.originalAmount);
+                        if (penalty > 0) {
+                            const notification = document.createElement('div');
+                            notification.className = 'penalty-notification';
+                            notification.onclick = () => showPaymentModal(idx + 1, month.originalAmount + penalty);
+                            notification.innerHTML = `
+                                <span style="font-size: 2rem;">⚠️</span>
+                                <div style="flex:1">
+                                    <strong>PENALTY ALERT!</strong><br>
+                                    Loan #${loan.id} - Month ${idx + 1}<br>
+                                    Penalty: ${formatCurrency(penalty)} (${daysLate} days late)
+                                </div>
+                                <span>👉</span>
+                            `;
+                            penaltyArea.appendChild(notification);
+                        }
+                    }
+                });
+            });
+        }
+
+        function formatCurrency(amount) {
+            return '₱' + parseFloat(amount || 0).toLocaleString('en-PH', { minimumFractionDigits: 2 });
+        }
+
+        // Document Upload Function
+        window.uploadDocument = function(type, input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (!userData.documents) userData.documents = {};
+                    userData.documents[type] = {
+                        name: file.name,
+                        data: e.target.result,
+                        type: file.type,
+                        uploadedAt: new Date().toISOString()
+                    };
+                    
+                    const badge = document.getElementById(`${type}-status-badge`);
+                    const container = document.getElementById(`doc-${type}-container`);
+                    const preview = document.getElementById(`${type}-preview`);
+                    
+                    if (badge) {
+                        badge.textContent = 'Uploaded';
+                        badge.className = 'upload-status status-uploaded';
+                    }
+                    if (container) container.classList.add('uploaded');
+                    if (preview && file.type.startsWith('image/')) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                    
+                    updateUploadProgress();
+                    saveUserSession();
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        function updateUploadProgress() {
+            const docs = userData.documents || {};
+            const uploaded = [docs.id, docs.income, docs.address].filter(Boolean).length;
+            const progress = (uploaded / 3) * 100;
+            const progressBar = document.getElementById('upload-progress');
+            if (progressBar) progressBar.style.width = progress + '%';
+            
+            const nextBtn = document.getElementById('next-to-review');
+            if (nextBtn) {
+                nextBtn.disabled = uploaded < 3;
+                if (uploaded === 3) {
+                    nextBtn.style.opacity = '1';
+                    nextBtn.style.cursor = 'pointer';
+                } else {
+                    nextBtn.style.opacity = '0.5';
+                    nextBtn.style.cursor = 'not-allowed';
+                }
+            }
+        }
+
+        window.showWithdrawalModal = function() {
+            if (!userData.wallet || userData.wallet.balance < 100) {
+                alert('Minimum withdrawal amount is ₱100');
+                return;
+            }
+            document.getElementById('withdraw-available').textContent = formatCurrency(userData.wallet.balance);
+            document.getElementById('withdrawal-modal').style.display = 'block';
+            document.getElementById('withdraw-method').onchange = function() {
+                document.getElementById('withdraw-account-details').style.display = this.value ? 'block' : 'none';
+            };
+        };
+
+        window.closeWithdrawalModal = function() {
+            document.getElementById('withdrawal-modal').style.display = 'none';
+            document.getElementById('withdraw-amount').value = '';
+            document.getElementById('withdraw-method').value = '';
+            document.getElementById('withdraw-reference').value = '';
+            document.getElementById('withdraw-account-details').style.display = 'none';
+        };
+
+        window.processWithdrawal = function() {
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+            const method = document.getElementById('withdraw-method').value;
+            const reference = document.getElementById('withdraw-reference').value;
+            if (!amount || amount < 100) { alert('Minimum ₱100'); return; }
+            if (amount > userData.wallet.balance) { alert('Insufficient balance'); return; }
+            if (!method || !reference) { alert('Complete all fields'); return; }
+            userData.wallet.balance -= amount;
+            if (!userData.wallet.transactions) userData.wallet.transactions = [];
+            userData.wallet.transactions.push({
+                type: 'withdrawal', amount, method, reference,
+                date: new Date().toISOString(), status: 'completed'
+            });
+            saveUserSession();
+            updateWalletDisplay();
+            closeWithdrawalModal();
+            alert(`Withdrawal of ${formatCurrency(amount)} to ${method} processed. Reference: ${reference}`);
+        };
+
+        window.showTransactionHistory = function() {
+            const list = document.getElementById('transaction-list');
+            list.innerHTML = '';
+            if (!userData.wallet?.transactions?.length) {
+                list.innerHTML = '<p style="text-align:center;padding:20px;">No transactions</p>';
+            } else {
+                userData.wallet.transactions.slice().reverse().forEach(trans => {
+                    const type = trans.type === 'withdrawal' ? '💸 Withdrawal' : '💰 Loan Credit';
+                    const date = new Date(trans.date).toLocaleDateString();
+                    const div = document.createElement('div');
+                    div.className = 'transaction-item';
+                    div.onclick = () => showTransactionDetails(trans);
+                    div.innerHTML = `<div style="display:flex;justify-content:space-between;"><strong>${type}</strong><span>${formatCurrency(trans.amount)}</span></div><div>${date}</div>`;
+                    list.appendChild(div);
+                });
+            }
+            document.getElementById('transaction-modal').style.display = 'block';
+        };
+
+        window.showTransactionDetails = function(trans) {
+            const content = document.getElementById('transaction-details-content');
+            const date = new Date(trans.date).toLocaleString();
+            let html = `<p><strong>Type:</strong> ${trans.type === 'withdrawal' ? 'Withdrawal' : 'Loan Credit'}</p>
+                        <p><strong>Amount:</strong> ${formatCurrency(trans.amount)}</p>
+                        <p><strong>Date:</strong> ${date}</p>`;
+            if (trans.type === 'withdrawal') html += `<p><strong>Method:</strong> ${trans.method}</p><p><strong>Reference:</strong> ${trans.reference}</p>`;
+            else if (trans.type === 'loan_credit') html += `<p><strong>Loan ID:</strong> ${trans.loanId}</p>`;
+            content.innerHTML = `<div style="background:var(--input-bg);padding:15px;border-radius:15px;">${html}</div>`;
+            document.getElementById('transaction-details-modal').style.display = 'block';
+        };
+
+        window.closeTransactionDetailsModal = () => document.getElementById('transaction-details-modal').style.display = 'none';
+        window.closeTransactionModal = () => document.getElementById('transaction-modal').style.display = 'none';
+        
+        function updateWalletDisplay() {
+            const walletBalance = document.getElementById('wallet-balance');
+            if (walletBalance && userData.wallet) walletBalance.textContent = formatCurrency(userData.wallet.balance || 0);
+        }
+
+        window.approveLoan = function(email, loanId) {
+            if (confirm('Approve this loan? Amount will be credited to wallet.')) {
+                const user = usersData[email];
+                const loan = user.loans.find(l => l.id === loanId);
+                if (loan) {
+                    loan.status = 'approved';
+                    loan.statusMessage = 'Approved by admin';
+                    const months = loan.months;
+                    const monthlyPayment = loan.monthlyPayment;
+                    const appliedDate = new Date(loan.appliedDate);
+                    loan.monthsData = [];
+                    for (let i = 1; i <= months; i++) {
+                        const dueDate = new Date(appliedDate);
+                        dueDate.setMonth(dueDate.getMonth() + i);
+                        loan.monthsData.push({
+                            month: i,
+                            dueDate: dueDate.toISOString().split('T')[0],
+                            originalAmount: monthlyPayment,
+                            paid: false,
+                            paidAmount: 0,
+                            penalty: 0,
+                            paymentDate: null
+                        });
+                    }
+                    if (!user.wallet) user.wallet = { balance: 0, transactions: [] };
+                    user.wallet.balance = (user.wallet.balance || 0) + loan.amount;
+                    if (!user.wallet.transactions) user.wallet.transactions = [];
+                    user.wallet.transactions.push({
+                        type: 'loan_credit', amount: loan.amount, loanId: loanId,
+                        date: new Date().toISOString()
+                    });
+                }
+                localStorage.setItem('loanSystemUsers', JSON.stringify(usersData));
+                if (currentRole === 'user' && currentUser === email) userData = { ...user, isLoggedIn: true };
+                updateAdminDashboard();
+                updateValidationTable();
+                alert(`Loan approved! ${formatCurrency(loan.amount)} credited to ${user.name}'s wallet.`);
+            }
+        };
+
+        function updateUserDashboard() {
+            document.getElementById('user-name').textContent = userData.name || 'User';
+            updateWalletDisplay();
+            const loanList = document.getElementById('loan-list');
+            loanList.innerHTML = '';
+            if (!userData.loans?.length) loanList.innerHTML = '<p>No loan applications yet.</p>';
+            else {
+                userData.loans.slice().reverse().forEach(loan => {
+                    loanList.innerHTML += `<div class="loan-item"><h4>${loan.type} Loan <span class="pill pill-${loan.status}">${loan.status}</span></h4>
+                        <p><strong>Amount:</strong> ${formatCurrency(loan.amount)} | <strong>Applied:</strong> ${loan.appliedDate}</p>
+                        <p><strong>Monthly:</strong> ${formatCurrency(loan.monthlyPayment)}</p></div>`;
+                });
+            }
+            updatePenaltyNotifications();
+            const activeLoans = userData.loans.filter(l => l.status === 'approved' && l.monthsData?.some(m => !m.paid));
+            const reminderDiv = document.getElementById('user-reminder');
+            if (activeLoans.length > 0 && reminderDiv) {
+                reminderDiv.style.display = 'block';
+                document.getElementById('reminder-count').textContent = activeLoans.length;
+                let html = '<ul>';
+                activeLoans.forEach(loan => {
+                    const unpaid = loan.monthsData?.filter(m => !m.paid) || [];
+                    if (unpaid.length > 0) {
+                        const nextMonth = unpaid[0];
+                        const penalty = calculatePenalty(nextMonth.dueDate, nextMonth.originalAmount);
+                        html += `<li>Loan #${loan.id}: Month ${nextMonth.month} payment of ${formatCurrency(nextMonth.originalAmount)}`;
+                        if (penalty > 0) html += ` + penalty ${formatCurrency(penalty)}`;
+                        html += ` due</li>`;
+                    }
+                });
+                html += '</ul>';
+                document.getElementById('reminder-details').innerHTML = html;
+            } else if (reminderDiv) reminderDiv.style.display = 'none';
+        }
+
+        function updateAdminDashboard() {
+            let totalUsers = Object.keys(usersData).length;
+            let totalLoans = 0, pendingLoans = 0, pendingPayments = 0, totalWallet = 0;
+            Object.values(usersData).forEach(user => {
+                if (user.wallet) totalWallet += user.wallet.balance || 0;
+                if (user.loans) {
+                    totalLoans += user.loans.length;
+                    pendingLoans += user.loans.filter(l => l.status === 'pending').length;
+                    user.loans.forEach(loan => {
+                        if (loan.pendingPayments) pendingPayments += loan.pendingPayments.length;
+                    });
+                }
+            });
+            document.getElementById('total-users').textContent = totalUsers;
+            document.getElementById('total-loans').textContent = totalLoans;
+            document.getElementById('pending-loans').textContent = pendingLoans;
+            document.getElementById('pending-payments').textContent = pendingPayments;
+            document.getElementById('total-wallet-balance').textContent = formatCurrency(totalWallet);
+            
+            const tbody = document.getElementById('admin-recent-loans');
+            tbody.innerHTML = '';
+            let allLoans = [];
+            Object.entries(usersData).forEach(([email, user]) => {
+                if (user.loans) user.loans.forEach(loan => allLoans.push({ userName: user.name, email, ...loan }));
+            });
+            allLoans.sort((a,b) => new Date(b.appliedDate) - new Date(a.appliedDate)).slice(0,10).forEach(loan => {
+                tbody.innerHTML += `<tr><td>${loan.userName}</td><td>${formatCurrency(loan.amount)}</td><td>${loan.months}</td>
+                    <td><span class="pill pill-${loan.status}">${loan.status}</span></td>
+                    <td>${loan.status === 'pending' ? `<button onclick="approveLoan('${loan.email}', '${loan.id}')" class="success-btn">Approve</button>` : '-'}</td></tr>`;
+            });
+        }
+
+        function updateNavBar() {
+            const navLinks = document.getElementById('navLinks');
+            const themeHtml = `<span class="theme-toggle" id="themeToggle">🌓 Light/Dark</span>`;
+            if (currentRole === 'user' && currentUser) {
+                navLinks.innerHTML = `<a href="#" id="nav-home">Dashboard</a><a href="#" id="nav-settings">Settings</a>
+                    <a href="#" id="nav-reminders">Payments</a><a href="#" id="nav-logout">Logout</a>
+                    <div id="session-timer" class="session-timer">⏰ 05:00</div>${themeHtml}`;
+                document.getElementById('nav-home').onclick = (e) => { e.preventDefault(); showPage('dashboard'); };
+                document.getElementById('nav-settings').onclick = (e) => { e.preventDefault(); showPage('settings'); };
+                document.getElementById('nav-reminders').onclick = (e) => { e.preventDefault(); showPage('repayment-dashboard'); };
+                document.getElementById('nav-logout').onclick = (e) => { e.preventDefault(); logout(); };
+            } else if (currentRole === 'admin') {
+                navLinks.innerHTML = `<a href="#" id="nav-home">Dashboard</a><a href="#" id="nav-validation">Validation</a>
+                    <a href="#" id="nav-reminders">Reminders</a><a href="#" id="nav-payment-approval">Receipts</a>
+                    <a href="#" id="nav-logout">Logout</a>${themeHtml}`;
+                document.getElementById('nav-home').onclick = (e) => { e.preventDefault(); showAdminPage('dashboard'); };
+                document.getElementById('nav-validation').onclick = (e) => { e.preventDefault(); showAdminPage('validation'); };
+                document.getElementById('nav-reminders').onclick = (e) => { e.preventDefault(); showAdminPage('reminders'); };
+                document.getElementById('nav-payment-approval').onclick = (e) => { e.preventDefault(); showAdminPage('payment-approval'); };
+                document.getElementById('nav-logout').onclick = (e) => { e.preventDefault(); logout(); };
+            } else navLinks.innerHTML = themeHtml;
+            document.getElementById('themeToggle')?.addEventListener('click', () => document.body.classList.toggle('dark-mode'));
+        }
+
+        function logout() {
+            if (sessionTimer) clearInterval(sessionTimer);
+            currentUser = null; currentRole = 'user';
+            userData = { isLoggedIn: false, name: '', email: '', phone: '', dob: '', gender: '', address: '', employment: '', income: 0, loans: [], wallet: { balance: 0, transactions: [] }, documents: { id: null, income: null, address: null } };
+            localStorage.removeItem('loanSystemCurrentUser');
+            localStorage.removeItem('loanSystemCurrentRole');
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('register-success').style.display = 'none';
+            showPage('login');
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(pageId + '-page')?.classList.add('active-page');
+            if (pageId === 'dashboard') { updateUserDashboard(); startSessionTimer(); }
+            else if (pageId === 'application-status') updateLoanStatusPage();
+            else if (pageId === 'repayment-dashboard') updateRepaymentDashboard();
+            else if (pageId === 'settings') loadUserSettings();
+            else if (pageId === 'personal-info') {
+                document.getElementById('personal-name').value = userData.name || '';
+                document.getElementById('personal-dob').value = userData.dob || '';
+                document.getElementById('personal-address').value = userData.address || '';
+                document.getElementById('personal-phone').value = userData.phone || '';
+            } else if (pageId === 'document-upload') updateUploadProgress();
+            updateNavBar();
+        }
+
+        function showAdminPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('admin-' + page + '-page')?.classList.add('active-page');
+            if (page === 'dashboard') updateAdminDashboard();
+            else if (page === 'validation') updateValidationTable();
+            else if (page === 'reminders') updateRemindersTable();
+            else if (page === 'payments') updatePaymentStatusTable();
+            else if (page === 'profile') updateUserSelector();
+            else if (page === 'payment-approval') updatePaymentApprovalTable();
+            else if (page === 'session-settings') {
+                document.getElementById('session-timeout').value = sessionSettings.timeoutMinutes;
+                document.getElementById('warning-time').value = sessionSettings.warningSeconds;
+            }
+            updateNavBar();
+        }
+
+        function generateLoanId() { return 'L-' + Date.now().toString().slice(-8) + '-' + Math.floor(Math.random() * 1000); }
+        function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+        function validatePhone(phone) { return /^\d{11}$/.test(phone); }
+        function validatePassword(pwd) { return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(pwd); }
+        function calculateAge(dob) { if (!dob) return 0; return new Date().getFullYear() - new Date(dob).getFullYear(); }
+
+        function setupEventListeners() {
+            document.getElementById('login-btn').onclick = function() {
+                const email = document.getElementById('login-email').value;
+                const pwd = document.getElementById('login-password').value;
+                document.getElementById('login-error').style.display = 'none';
+                document.getElementById('register-success').style.display = 'none';
+                if (email === ADMIN_USERNAME && pwd === ADMIN_PASSWORD) {
+                    currentUser = 'admin'; currentRole = 'admin'; saveUserSession(); showAdminPage('dashboard'); return;
+                }
+                if (usersData[email] && usersData[email].password === pwd) {
+                    currentUser = email; currentRole = 'user';
+                    userData = { ...usersData[email], isLoggedIn: true };
+                    if (!userData.wallet) userData.wallet = { balance: 0, transactions: [] };
+                    if (!userData.documents) userData.documents = { id: null, income: null, address: null };
+                    saveUserSession(); showPage('dashboard');
+                } else document.getElementById('login-error').style.display = 'block';
+            };
+            document.getElementById('register-link').onclick = () => { document.getElementById('register-success').style.display = 'none'; showPage('register'); };
+            document.getElementById('back-to-login').onclick = () => { document.getElementById('login-error').style.display = 'none'; document.getElementById('register-success').style.display = 'none'; showPage('login'); };
+            
+            document.getElementById('reg-name').addEventListener('input', validateRegistration);
+            document.getElementById('reg-email').addEventListener('input', validateRegistration);
+            document.getElementById('reg-phone').addEventListener('input', function(e) { e.target.value = e.target.value.replace(/\D/g, '').slice(0,11); validateRegistration(); });
+            document.getElementById('reg-dob').addEventListener('change', validateRegistration);
+            document.getElementById('reg-address').addEventListener('input', validateRegistration);
+            document.getElementById('reg-password').addEventListener('input', validateRegistration);
+            document.getElementById('reg-confirm-password').addEventListener('input', validateRegistration);
+            document.getElementById('reg-terms').addEventListener('change', validateRegistration);
+
+            document.getElementById('register-btn').onclick = function() {
+                const email = document.getElementById('reg-email').value;
+                usersData[email] = {
+                    name: document.getElementById('reg-name').value,
+                    email: email,
+                    phone: document.getElementById('reg-phone').value,
+                    dob: document.getElementById('reg-dob').value,
+                    address: document.getElementById('reg-address').value,
+                    password: document.getElementById('reg-password').value,
+                    loans: [], gender: '', employment: '', income: 0,
+                    wallet: { balance: 0, transactions: [] },
+                    documents: { id: null, income: null, address: null }
+                };
+                localStorage.setItem('loanSystemUsers', JSON.stringify(usersData));
+                document.getElementById('register-success').style.display = 'block';
+                showPage('login');
+                document.getElementById('login-email').value = email;
+                document.getElementById('login-password').value = '';
+            };
+
+            document.getElementById('loan-amount').addEventListener('input', function() {
+                const amount = parseFloat(this.value);
+                if (amount && amount >= 1000 && amount <= 20000) updatePaymentPreview();
+            });
+            document.getElementById('payment-months').addEventListener('change', updatePaymentPreview);
+            document.getElementById('personal-phone').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0,11);
+            });
+
+            document.getElementById('apply-new-loan').onclick = () => showPage('loan-application');
+            document.getElementById('view-loan-status').onclick = () => showPage('application-status');
+            document.getElementById('cancel-application').onclick = () => showPage('dashboard');
+            
+            document.getElementById('next-to-personal').onclick = function() {
+                if (!document.getElementById('loan-type').value) { alert('Select loan type'); return; }
+                const amount = parseFloat(document.getElementById('loan-amount').value);
+                if (!amount || amount < 1000 || amount > 20000) { alert('Invalid amount'); return; }
+                if (!document.getElementById('payment-months').value) { alert('Select payment period'); return; }
+                showPage('personal-info');
+            };
+            
+            document.getElementById('back-to-loan-details').onclick = () => showPage('loan-application');
+            document.getElementById('next-to-documents').onclick = function() {
+                const phone = document.getElementById('personal-phone').value;
+                if (!document.getElementById('personal-gender').value) { alert('Select gender'); return; }
+                if (phone.length !== 11) { alert('Phone must be 11 digits'); return; }
+                if (!document.getElementById('employment-status').value) { alert('Select employment'); return; }
+                if (!document.getElementById('monthly-income').value) { alert('Enter income'); return; }
+                showPage('document-upload');
+            };
+            
+            document.getElementById('next-to-review').onclick = function() { 
+                const docs = userData.documents || {};
+                if (!docs.id || !docs.income || !docs.address) {
+                    alert('Please upload all required documents first');
+                    return;
+                }
+                updateReviewPage(); 
+                showPage('review'); 
+            };
+            document.getElementById('back-to-personal').onclick = () => showPage('personal-info');
+            document.getElementById('edit-loan-details').onclick = () => showPage('loan-application');
+            document.getElementById('edit-personal-details').onclick = () => showPage('personal-info');
+            document.getElementById('back-to-documents').onclick = () => showPage('document-upload');
+            
+            // Submit application with warning modal
+            document.getElementById('submit-application').onclick = function() {
+                document.getElementById('warning-modal').style.display = 'flex';
+            };
+            
+            document.getElementById('confirm-submit').onclick = function() {
+                document.getElementById('warning-modal').style.display = 'none';
+                submitLoanApplication();
+            };
+            
+            document.getElementById('cancel-submit').onclick = function() {
+                document.getElementById('warning-modal').style.display = 'none';
+            };
+            
+            document.getElementById('back-to-dashboard-from-status').onclick = () => showPage('dashboard');
+            document.getElementById('back-to-dashboard-from-repayment').onclick = () => showPage('dashboard');
+            document.getElementById('back-to-dashboard-from-settings').onclick = () => showPage('dashboard');
+            document.getElementById('save-settings').onclick = saveUserSettings;
+        }
+
+        function validateRegistration() {
+            let isValid = true;
+            isValid = isValid && document.getElementById('reg-name').value.length >= 3;
+            isValid = isValid && validateEmail(document.getElementById('reg-email').value);
+            isValid = isValid && validatePhone(document.getElementById('reg-phone').value);
+            const dob = document.getElementById('reg-dob').value;
+            isValid = isValid && dob && calculateAge(dob) >= 18;
+            isValid = isValid && document.getElementById('reg-address').value;
+            const pwd = document.getElementById('reg-password').value;
+            isValid = isValid && validatePassword(pwd);
+            isValid = isValid && pwd === document.getElementById('reg-confirm-password').value;
+            isValid = isValid && document.getElementById('reg-terms').checked;
+            document.getElementById('register-btn').disabled = !isValid;
+        }
+
+        function updatePaymentPreview() {
+            const amount = parseFloat(document.getElementById('loan-amount').value);
+            const months = parseInt(document.getElementById('payment-months').value);
+            if (amount && months && amount >= 1000 && amount <= 20000) {
+                const calc = calculateMonthlyPayment(amount, months);
+                document.getElementById('monthly-payment-preview').textContent = formatCurrency(calc.monthlyPayment);
+                document.getElementById('total-months-preview').textContent = months;
+                document.getElementById('total-interest-preview').textContent = formatCurrency(calc.totalInterest);
+                document.getElementById('total-payment-preview').textContent = formatCurrency(calc.totalPayment);
+                document.getElementById('payment-preview').style.display = 'block';
+            }
+        }
+
+        function updateReviewPage() {
+            const amount = parseFloat(document.getElementById('loan-amount').value);
+            const months = parseInt(document.getElementById('payment-months').value);
+            const calc = calculateMonthlyPayment(amount, months);
+            document.getElementById('review-loan-type').textContent = document.getElementById('loan-type').value;
+            document.getElementById('review-loan-amount').textContent = formatCurrency(amount);
+            document.getElementById('review-months').textContent = months;
+            document.getElementById('review-monthly-payment').textContent = formatCurrency(calc.monthlyPayment);
+            document.getElementById('review-name').textContent = document.getElementById('personal-name').value;
+            document.getElementById('review-phone').textContent = document.getElementById('personal-phone').value;
+            document.getElementById('review-employment').textContent = document.getElementById('employment-status').value;
+            document.getElementById('review-income').textContent = formatCurrency(document.getElementById('monthly-income').value);
+            
+            const tbody = document.getElementById('payment-schedule-preview');
+            tbody.innerHTML = '';
+            let remaining = calc.totalPayment;
+            const appliedDate = new Date();
+            for (let i = 1; i <= months; i++) {
+                const dueDate = new Date(appliedDate);
+                dueDate.setMonth(dueDate.getMonth() + i);
+                remaining -= calc.monthlyPayment;
+                tbody.innerHTML += `<tr><td>Month ${i}</td><td>${dueDate.toISOString().split('T')[0]}</td>
+                    <td>${formatCurrency(calc.monthlyPayment)}</td><td>${formatCurrency(Math.max(0, remaining))}</td></tr>`;
+            }
+        }
+
+        function submitLoanApplication() {
+            const loanId = generateLoanId();
+            const amount = parseFloat(document.getElementById('loan-amount').value);
+            const months = parseInt(document.getElementById('payment-months').value);
+            const calc = calculateMonthlyPayment(amount, months);
+            
+            const newLoan = {
+                id: loanId,
+                type: document.getElementById('loan-type').value,
+                amount, months,
+                monthlyPayment: calc.monthlyPayment,
+                totalInterest: calc.totalInterest,
+                totalPayment: calc.totalPayment,
+                appliedDate: new Date().toISOString().split('T')[0],
+                status: 'pending',
+                statusMessage: 'Pending admin approval',
+                payments: [],
+                paidAmount: 0,
+                paymentHistory: [],
+                pendingPayments: [],
+                monthsData: []
+            };
+            
+            if (!userData.loans) userData.loans = [];
+            userData.loans.push(newLoan);
+            userData.gender = document.getElementById('personal-gender').value;
+            userData.phone = document.getElementById('personal-phone').value;
+            userData.employment = document.getElementById('employment-status').value;
+            userData.income = parseFloat(document.getElementById('monthly-income').value);
+            saveUserSession();
+            alert('Loan application submitted successfully! Waiting for admin approval.');
+            showPage('application-status');
+        }
+
+        function updateLoanStatusPage() {
+            const container = document.getElementById('loan-status-container');
+            container.innerHTML = '';
+            if (!userData.loans?.length) { container.innerHTML = '<p>No applications yet.</p>'; return; }
+            userData.loans.slice().reverse().forEach(loan => {
+                container.innerHTML += `<div style="padding:15px;background:var(--card-bg);border-radius:20px;margin-bottom:10px;">
+                    <h3>${loan.id} <span class="pill pill-${loan.status}">${loan.status}</span></h3>
+                    <p><strong>Amount:</strong> ${formatCurrency(loan.amount)}</p>
+                    <p><strong>Monthly:</strong> ${formatCurrency(loan.monthlyPayment)}</p>
+                    <p><strong>Status:</strong> ${loan.statusMessage}</p></div>`;
+            });
+        }
+
+        function updateRepaymentDashboard() {
+            const activeLoan = userData.loans?.find(l => l.status === 'approved' && l.monthsData?.some(m => !m.paid));
+            if (!activeLoan) {
+                document.getElementById('active-loan-summary').innerHTML = '<p>No active loans.</p>';
+                document.getElementById('payment-history-table').innerHTML = '<tr><td colspan="7">No active loans</td></tr>';
+                document.getElementById('penalty-details').innerHTML = '';
+                return;
+            }
+            currentLoanId = activeLoan.id;
+            let totalPaid = 0, totalDue = 0, totalPenalty = 0;
+            activeLoan.monthsData.forEach(month => {
+                if (month.paid) totalPaid += month.paidAmount;
+                else {
+                    const penalty = calculatePenalty(month.dueDate, month.originalAmount);
+                    totalDue += month.originalAmount + penalty;
+                    totalPenalty += penalty;
+                }
+            });
+            document.getElementById('active-loan-summary').innerHTML = `
+                <p><strong>Loan ID:</strong> ${activeLoan.id}</p>
+                <p><strong>Original Amount:</strong> ${formatCurrency(activeLoan.amount)}</p>
+                <p><strong>Total with Interest:</strong> ${formatCurrency(activeLoan.totalPayment)}</p>
+                <p><strong>Paid:</strong> ${formatCurrency(totalPaid)}</p>
+                <p><strong>Remaining:</strong> ${formatCurrency(totalDue)}</p>
+                ${totalPenalty > 0 ? `<p style="color:#e74c3c;"><strong>Total Penalty:</strong> ${formatCurrency(totalPenalty)}</p>` : ''}
+            `;
+            document.getElementById('penalty-details').innerHTML = totalPenalty > 0 ? 
+                `<div class="penalty-notification"><span>⚠️</span><div><strong>PENALTY CHARGES</strong><br>You have ${formatCurrency(totalPenalty)} in penalties.</div></div>` : '';
+            
+            const tbody = document.getElementById('payment-history-table');
+            tbody.innerHTML = '';
+            for (let i = 0; i < activeLoan.monthsData.length; i++) {
+                const month = activeLoan.monthsData[i];
+                const penalty = calculatePenalty(month.dueDate, month.originalAmount);
+                const totalDueMonth = month.originalAmount + penalty;
+                const pendingPayment = activeLoan.pendingPayments?.find(p => p.month === (i + 1));
+                let status = 'Pending', statusClass = 'pill-pending', actionBtn = '';
+                if (month.paid) {
+                    status = 'Paid';
+                    statusClass = 'pill-paid';
+                    actionBtn = `Paid ${formatCurrency(month.paidAmount)}`;
+                } else if (pendingPayment && pendingPayment.status === 'pending') {
+                    status = 'Pending Approval';
+                    statusClass = 'pill-approval';
+                    actionBtn = `Receipt submitted (Ref: ${pendingPayment.reference})`;
+                } else {
+                    const dueDate = new Date(month.dueDate);
+                    const daysLate = Math.floor((new Date() - dueDate) / (1000 * 60 * 60 * 24));
+                    if (daysLate > 0) {
+                        if (daysLate <= 7) statusClass = 'pill-warning';
+                        else statusClass = 'pill-penalty';
+                        status = `${daysLate} days late`;
+                    }
+                    actionBtn = `<button class="success-btn" style="padding:8px;" onclick="showPaymentModal(${i + 1}, ${totalDueMonth})">Pay Now</button>`;
+                }
+                tbody.innerHTML += `<tr><td>Month ${i + 1}</td><td>${month.dueDate}</td>
+                    <td>${formatCurrency(month.originalAmount)}</td>
+                    <td class="${penalty > 0 ? 'pill-penalty' : ''}">${penalty > 0 ? formatCurrency(penalty) : '-'}</td>
+                    <td>${formatCurrency(totalDueMonth)}</td>
+                    <td><span class="pill ${statusClass}">${status}</span></td>
+                    <td>${actionBtn}</td></tr>`;
+            }
+        }
+
+        window.showPaymentModal = function(month, totalAmount) {
+            selectedMonth = month;
+            receiptFile = null;
+            document.getElementById('payment-amount').value = totalAmount;
+            document.getElementById('receipt-preview').style.display = 'none';
+            document.getElementById('receipt-file').value = '';
+            document.getElementById('payment-method-select').value = '';
+            document.getElementById('payment-reference').value = '';
+            document.getElementById('submit-payment-btn').disabled = true;
+            document.getElementById('payment-modal').style.display = 'block';
+            
+            const checkInputs = () => {
+                const method = document.getElementById('payment-method-select').value;
+                const reference = document.getElementById('payment-reference').value;
+                document.getElementById('submit-payment-btn').disabled = !(method && reference && receiptFile);
+            };
+            
+            document.getElementById('payment-method-select').onchange = checkInputs;
+            document.getElementById('payment-reference').oninput = checkInputs;
+        };
+
+        window.closePaymentModal = function() {
+            document.getElementById('payment-modal').style.display = 'none';
+            selectedMonth = null;
+        };
+
+        window.submitPaymentForApproval = function() {
+            const method = document.getElementById('payment-method-select').value;
+            const reference = document.getElementById('payment-reference').value;
+            if (!method || !reference || !receiptFile) {
+                alert('Please complete all fields and upload receipt');
+                return;
+            }
+            const activeLoan = userData.loans?.find(l => l.id === currentLoanId);
+            if (activeLoan) {
+                const monthData = activeLoan.monthsData[selectedMonth - 1];
+                const penalty = calculatePenalty(monthData.dueDate, monthData.originalAmount);
+                const totalAmount = monthData.originalAmount + penalty;
+                if (!activeLoan.pendingPayments) activeLoan.pendingPayments = [];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    activeLoan.pendingPayments.push({
+                        month: selectedMonth,
+                        method: method,
+                        reference: reference,
+                        date: new Date().toISOString().split('T')[0],
+                        originalAmount: monthData.originalAmount,
+                        penalty: penalty,
+                        totalAmount: totalAmount,
+                        receipt: e.target.result,
+                        status: 'pending'
+                    });
+                    saveUserSession();
+                    alert(`Payment receipt for Month ${selectedMonth} submitted for approval!`);
+                    closePaymentModal();
+                    updateRepaymentDashboard();
+                };
+                reader.readAsDataURL(receiptFile);
+            }
+        };
+
+        function previewReceipt(input) {
+            if (input.files && input.files[0]) {
+                receiptFile = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('receipt-preview').src = e.target.result;
+                    document.getElementById('receipt-preview').style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+                const method = document.getElementById('payment-method-select').value;
+                const reference = document.getElementById('payment-reference').value;
+                document.getElementById('submit-payment-btn').disabled = !(method && reference);
+            }
+        }
+
+        function loadUserSettings() {
+            document.getElementById('settings-name').value = userData.name || '';
+            document.getElementById('settings-email').value = userData.email || '';
+            document.getElementById('settings-phone').value = userData.phone || '';
+            document.getElementById('settings-address').value = userData.address || '';
+        }
+        
+        function saveUserSettings() {
+            userData.name = document.getElementById('settings-name').value;
+            userData.email = document.getElementById('settings-email').value;
+            userData.phone = document.getElementById('settings-phone').value;
+            userData.address = document.getElementById('settings-address').value;
+            saveUserSession();
+            alert('Settings saved!');
+            showPage('dashboard');
+        }
+
+        function updateValidationTable() {
+            const tbody = document.getElementById('pending-validation-table');
+            tbody.innerHTML = '';
+            Object.entries(usersData).forEach(([email, user]) => {
+                if (user.loans) user.loans.filter(l => l.status === 'pending').forEach(loan => {
+                    tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
+                        <td>${formatCurrency(loan.amount)}</td><td>${loan.months} months</td>
+                        <td><button onclick="approveLoan('${email}', '${loan.id}')" class="success-btn">Approve</button>
+                        <button onclick="rejectLoan('${email}', '${loan.id}')" class="danger-btn">Reject</button></td></tr>`;
+                });
+            });
+        }
+
+        window.rejectLoan = function(email, loanId) {
+            if (confirm('Reject this loan?')) {
+                const user = usersData[email];
+                const loan = user.loans.find(l => l.id === loanId);
+                if (loan) { loan.status = 'rejected'; loan.statusMessage = 'Rejected by admin'; }
+                localStorage.setItem('loanSystemUsers', JSON.stringify(usersData));
+                updateValidationTable();
+                updateAdminDashboard();
+                alert('Loan rejected.');
+            }
+        };
+
+        function updateRemindersTable() {
+            const tbody = document.getElementById('reminder-table');
+            tbody.innerHTML = '';
+            Object.entries(usersData).forEach(([email, user]) => {
+                if (user.loans) {
+                    user.loans.filter(l => l.status === 'approved').forEach(loan => {
+                        if (loan.monthsData) {
+                            const unpaid = loan.monthsData.filter(m => !m.paid);
+                            if (unpaid.length > 0) {
+                                const next = unpaid[0];
+                                const dueDate = new Date(next.dueDate);
+                                const daysLeft = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+                                tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
+                                    <td>${next.dueDate}</td><td>${daysLeft > 0 ? daysLeft : 0} days</td></tr>`;
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function updatePaymentStatusTable() {
+            const tbody = document.getElementById('payment-status-table');
+            tbody.innerHTML = '';
+            Object.entries(usersData).forEach(([email, user]) => {
+                if (user.loans) {
+                    user.loans.filter(l => l.status === 'approved').forEach(loan => {
+                        let paid = 0, due = loan.totalPayment;
+                        if (loan.monthsData) paid = loan.monthsData.filter(m => m.paid).reduce((sum, m) => sum + m.paidAmount, 0);
+                        let lastPayment = 'No payments';
+                        if (loan.paymentHistory?.length) {
+                            const last = loan.paymentHistory[loan.paymentHistory.length - 1];
+                            lastPayment = `Month ${last.month} - ${last.date}`;
+                        }
+                        tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
+                            <td>${formatCurrency(due)}</td><td>${formatCurrency(paid)}</td>
+                            <td>${formatCurrency(due - paid)}</td><td>${lastPayment}</td></tr>`;
+                    });
+                }
+            });
+        }
+
+        function updatePaymentApprovalTable() {
+            const tbody = document.getElementById('payment-approval-table');
+            tbody.innerHTML = '';
+            Object.entries(usersData).forEach(([email, user]) => {
+                if (user.loans) {
+                    user.loans.forEach(loan => {
+                        if (loan.pendingPayments) {
+                            loan.pendingPayments.forEach(payment => {
+                                if (payment.status === 'pending') {
+                                    tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
+                                        <td>Month ${payment.month}</td><td>${formatCurrency(payment.totalAmount)}</td>
+                                        <td>${payment.method}</td><td>${payment.reference}</td>
+                                        <td><button onclick="viewReceipt('${email}', '${loan.id}', ${payment.month})" class="secondary-btn">View</button></td>
+                                        <td><button onclick="approvePayment('${email}', '${loan.id}', ${payment.month})" class="success-btn">✓ Approve</button>
+                                        <button onclick="rejectPayment('${email}', '${loan.id}', ${payment.month})" class="danger-btn">✗ Reject</button></td></tr>`;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        window.viewReceipt = function(email, loanId, month) {
+            const user = usersData[email];
+            const loan = user.loans.find(l => l.id === loanId);
+            const payment = loan.pendingPayments.find(p => p.month === month);
+            if (payment && payment.receipt) {
+                const w = window.open('');
+                w.document.write(`<html><body style="text-align:center;padding:20px;"><h2>Payment Receipt</h2>
+                    <p><strong>User:</strong> ${user.name}</p><p><strong>Loan ID:</strong> ${loanId}</p>
+                    <p><strong>Month:</strong> ${month}</p><p><strong>Amount:</strong> ${formatCurrency(payment.totalAmount)}</p>
+                    <p><strong>Method:</strong> ${payment.method}</p><p><strong>Reference:</strong> ${payment.reference}</p>
+                    <p><strong>Date:</strong> ${payment.date}</p>
+                    <img src="${payment.receipt}" style="max-width:90%;max-height:60vh;margin:20px 0;"><br>
+                    <button onclick="window.close()">Close</button></body></html>`);
+            }
+        };
+
+        window.approvePayment = function(email, loanId, month) {
+            if (confirm('Approve this payment?')) {
+                const user = usersData[email];
+                const loan = user.loans.find(l => l.id === loanId);
+                const paymentIndex = loan.pendingPayments.findIndex(p => p.month === month);
+                if (paymentIndex !== -1) {
+                    const payment = loan.pendingPayments[paymentIndex];
+                    const monthData = loan.monthsData[month - 1];
+                    monthData.paid = true;
+                    monthData.paidAmount = payment.totalAmount;
+                    monthData.paymentDate = new Date().toISOString().split('T')[0];
+                    monthData.penaltyPaid = payment.penalty;
+                    if (!loan.paymentHistory) loan.paymentHistory = [];
+                    loan.paymentHistory.push({
+                        month: month, method: payment.method, reference: payment.reference,
+                        date: new Date().toISOString().split('T')[0],
+                        amount: payment.originalAmount, penalty: payment.penalty, total: payment.totalAmount
+                    });
+                    loan.pendingPayments.splice(paymentIndex, 1);
+                    localStorage.setItem('loanSystemUsers', JSON.stringify(usersData));
+                    alert(`Payment for Month ${month} approved!`);
+                    updatePaymentApprovalTable();
+                    if (currentRole === 'user' && currentUser === email) userData = { ...user, isLoggedIn: true };
+                }
+            }
+        };
+
+        window.rejectPayment = function(email, loanId, month) {
+            if (confirm('Reject this payment? The client will need to resubmit.')) {
+                const user = usersData[email];
+                const loan = user.loans.find(l => l.id === loanId);
+                const paymentIndex = loan.pendingPayments.findIndex(p => p.month === month);
+                if (paymentIndex !== -1) {
+                    loan.pendingPayments.splice(paymentIndex, 1);
+                    localStorage.setItem('loanSystemUsers', JSON.stringify(usersData));
+                    alert('Payment rejected.');
+                    updatePaymentApprovalTable();
+                }
+            }
+        };
+
+        function updateUserSelector() {
+            const select = document.getElementById('user-selector');
+            select.innerHTML = '<option value="">-- Select User --</option>';
+            Object.keys(usersData).forEach(email => {
+                select.innerHTML += `<option value="${email}">${usersData[email].name}</option>`;
+            });
+        }
+
+        window.loadUserProfile = function() {
+            const email = document.getElementById('user-selector').value;
+            if (!email) return;
+            const user = usersData[email];
+            document.getElementById('profile-user-name').textContent = user.name;
+            document.getElementById('profile-user-email').textContent = user.email;
+            document.getElementById('profile-user-phone').textContent = user.phone || 'N/A';
+            document.getElementById('profile-user-address').textContent = user.address || 'N/A';
+            document.getElementById('profile-wallet-balance').textContent = formatCurrency(user.wallet?.balance || 0);
+            const tbody = document.getElementById('profile-user-loans');
+            tbody.innerHTML = '';
+            if (user.loans) user.loans.forEach(loan => {
+                tbody.innerHTML += `叭<td>${loan.id}
+                     <td>${formatCurrency(loan.amount)}</td>
+                     <td><span class="pill pill-${loan.status}">${loan.status}</span></td>
+                  </tr>`;
+            });
+            document.getElementById('user-profile-display').style.display = 'block';
+        };
+
+        window.saveRegulations = function() {
+            regulations = {
+                interestRate: parseFloat(document.getElementById('interest-rate').value),
+                penaltyRate: parseFloat(document.getElementById('penalty-rate').value),
+                minLoan: parseFloat(document.getElementById('min-loan').value),
+                maxLoan: parseFloat(document.getElementById('max-loan').value)
+            };
+            localStorage.setItem('loanSystemRegulations', JSON.stringify(regulations));
+            alert('Regulations saved successfully!');
+        };
+
+        window.sendReminders = function() { 
+            alert('Reminders sent to all borrowers with pending payments!');
+        };
+        
+        window.showAdminPage = showAdminPage;
+        window.showPage = showPage;
+        
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const warningModal = document.getElementById('warning-modal');
+            if (event.target === warningModal) {
+                warningModal.style.display = 'none';
+            }
+            const withdrawalModal = document.getElementById('withdrawal-modal');
+            if (event.target === withdrawalModal) {
+                withdrawalModal.style.display = 'none';
+            }
+            const paymentModal = document.getElementById('payment-modal');
+            if (event.target === paymentModal) {
+                paymentModal.style.display = 'none';
+            }
+            const transactionModal = document.getElementById('transaction-modal');
+            if (event.target === transactionModal) {
+                transactionModal.style.display = 'none';
+            }
+            const detailsModal = document.getElementById('transaction-details-modal');
+            if (event.target === detailsModal) {
+                detailsModal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
