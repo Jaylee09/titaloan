@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>LoanSystem</title>
+    <title>LoanSystem - Complete Loan Management</title>
     <style>
         * {
             margin: 0;
@@ -454,7 +454,7 @@
         <div id="dashboard-page" class="page">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h1>Welcome, <span id="user-name">User</span>! 🌟</h1>
-                
+                <div id="session-timer" class="session-timer">⏰ 05:00</div>
             </div>
             
             <div class="wallet-card">
@@ -471,7 +471,7 @@
             <div class="dashboard-cards">
                 <div class="dashboard-card">
                     <h3>Apply for Loan</h3>
-                    <p>Start a new loan application (₱1,000 - ₱2,000)</p>
+                    <p>Start a new loan application</p>
                     <button id="apply-new-loan" class="success-btn">Apply Now</button>
                 </div>
                 <div class="dashboard-card">
@@ -566,9 +566,8 @@
                 <label>Loan Amount (₱)</label>
                 <div style="position: relative;">
                     <span class="currency-symbol">₱</span>
-                    <input type="number" id="loan-amount" class="amount-input" placeholder="1,000 - 2,000" min="1000" max="2000">
+                    <input type="number" id="loan-amount" class="amount-input" placeholder="1,000 - 20,000" min="1000" max="20000">
                 </div>
-                <div class="error-message" id="loan-amount-error" style="color: #e74c3c; font-size: 0.8rem; margin-top: 5px;">Amount must be between ₱1,000 and ₱2,000</div>
             </div>
             <div class="form-group">
                 <label>Payment Period (Months)</label>
@@ -754,9 +753,9 @@
             <h3>Payment Schedule</h3>
             <div style="overflow-x: auto;">
                 <table class="payment-schedule-table">
-                    <thead> <th>Month</th><th>Due Date</th><th>Amount</th><th>Remaining</th> </thead>
+                    <thead> oxf<th>Month</th><th>Due Date</th><th>Amount</th><th>Remaining</th> </thead>
                     <tbody id="payment-schedule-preview"></tbody>
-                                   </table>
+                 </table>
             </div>
             
             <button class="secondary-btn" id="back-to-documents">← Back</button>
@@ -779,9 +778,9 @@
             <h3>Payment Schedule</h3>
             <div style="overflow-x: auto;">
                 <table class="payment-schedule-table">
-                    <thead> <th>Month</th><th>Due Date</th><th>Original</th><th>Penalty</th><th>Total Due</th><th>Status</th><th>Action</th> </thead>
+                    <thead> oxf<th>Month</th><th>Due Date</th><th>Original</th><th>Penalty</th><th>Total Due</th><th>Status</th><th>Action</th> </thead>
                     <tbody id="payment-history-table"></tbody>
-                  </table>
+                 </table>
             </div>
             
             <!-- Payment Modal -->
@@ -874,7 +873,7 @@
             </div>
             <h3>Recent Loan Applications</h3>
             <div style="overflow-x: auto;">
-                <table class="admin-table"><thead> <th>User</th><th>Amount</th><th>Months</th><th>Status</th><th>Action</th> </thead><tbody id="admin-recent-loans"></tbody> </table>
+                <table class="admin-table"><thead> oxf<th>User</th><th>Amount</th><th>Months</th><th>Status</th><th>Action</th> </thead><tbody id="admin-recent-loans"></tbody> </table>
             </div>
         </div>
         
@@ -883,8 +882,8 @@
             <div style="padding: 20px; background: var(--card-bg); border-radius: 20px;">
                 <div class="form-group"><label>Interest Rate (%)</label><input type="number" id="interest-rate" value="5" min="1" max="20"></div>
                 <div class="form-group"><label>Penalty Rate (% per day)</label><input type="number" id="penalty-rate" value="1" min="1" max="10"></div>
-                <div class="form-group"><label>Min Loan (₱)</label><input type="number" id="min-loan" value="1000" min="1000" max="2000"></div>
-                <div class="form-group"><label>Max Loan (₱)</label><input type="number" id="max-loan" value="2000" min="1000" max="2000"></div>
+                <div class="form-group"><label>Min Loan (₱)</label><input type="number" id="min-loan" value="1000"></div>
+                <div class="form-group"><label>Max Loan (₱)</label><input type="number" id="max-loan" value="20000"></div>
                 <button onclick="saveRegulations()" class="success-btn">Save</button>
                 <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
             </div>
@@ -903,7 +902,7 @@
         <div id="admin-validation-page" class="page">
             <h1>✅ Loan Validation</h1>
             <div style="overflow-x: auto;">
-                <table class="admin-table"><thead> <th>User</th><th>Loan ID</th><th>Amount</th><th>Months</th><th>Actions</th> </thead><tbody id="pending-validation-table"></tbody> </table>
+                <table class="admin-table"><thead> oxf<th>User</th><th>Loan ID</th><th>Amount</th><th>Months</th><th>Actions</th> </thead><tbody id="pending-validation-table"></tbody> </table>
             </div>
             <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
         </div>
@@ -912,7 +911,7 @@
             <h1>📄 Receipt Approval</h1>
             <p>Review and approve payment receipts submitted by clients</p>
             <div style="overflow-x: auto;">
-                <table class="admin-table"><thead> <th>User</th><th>Loan ID</th><th>Month</th><th>Amount</th><th>Method</th><th>Reference</th><th>Receipt</th><th>Actions</th> </thead><tbody id="payment-approval-table"></tbody> </table>
+                <table class="admin-table"><thead> oxf<th>User</th><th>Loan ID</th><th>Month</th><th>Amount</th><th>Method</th><th>Reference</th><th>Receipt</th><th>Actions</th> </thead><tbody id="payment-approval-table"></tbody> </table>
             </div>
             <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
         </div>
@@ -927,7 +926,7 @@
                 <p><strong>Address:</strong> <span id="profile-user-address"></span></p>
                 <p><strong>Wallet:</strong> <span id="profile-wallet-balance"></span></p>
                 <h4>Loan History</h4>
-                <div style="overflow-x: auto;"><table class="admin-table"><thead> <th>Loan ID</th><th>Amount</th><th>Status</th> </thead><tbody id="profile-user-loans"></tbody> </table></div>
+                <div style="overflow-x: auto;"><table class="admin-table"><thead> oxf<th>Loan ID</th><th>Amount</th><th>Status</th> </thead><tbody id="profile-user-loans"></tbody> </table></div>
             </div>
             <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
         </div>
@@ -935,7 +934,7 @@
         <div id="admin-payments-page" class="page">
             <h1>💸 Payment Status</h1>
             <div style="overflow-x: auto;">
-                <table class="admin-table"><thead> <th>User</th><th>Loan ID</th><th>Total Due</th><th>Paid</th><th>Balance</th><th>Last Payment</th> </thead><tbody id="payment-status-table"></tbody> </table>
+                <table class="admin-table"><thead> oxf<th>User</th><th>Loan ID</th><th>Total Due</th><th>Paid</th><th>Balance</th><th>Last Payment</th> </thead><tbody id="payment-status-table"></tbody> </table>
             </div>
             <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
         </div>
@@ -944,7 +943,7 @@
             <h1>⏰ Payment Reminders</h1>
             <button onclick="sendReminders()" class="success-btn">Send Reminders to All</button>
             <div style="overflow-x: auto; margin-top: 20px;">
-                <table class="admin-table"><thead> <th>User</th><th>Loan ID</th><th>Next Due</th><th>Days Left</th> </thead><tbody id="reminder-table"></tbody> </table>
+                <table class="admin-table"><thead> oxf<th>User</th><th>Loan ID</th><th>Next Due</th><th>Days Left</th> </thead><tbody id="reminder-table"></tbody> </table>
             </div>
             <button class="secondary-btn" onclick="showAdminPage('dashboard')">← Back</button>
         </div>
@@ -988,7 +987,7 @@
         const ADMIN_USERNAME = 'admin';
         const ADMIN_PASSWORD = 'bsit';
         
-        let regulations = { interestRate: 5, penaltyRate: 1, minLoan: 1000, maxLoan: 2000 };
+        let regulations = { interestRate: 5, penaltyRate: 1, minLoan: 1000, maxLoan: 20000 };
         let sessionSettings = { timeoutMinutes: 5, warningSeconds: 30 };
         let selectedMonth = null;
         let currentLoanId = null;
@@ -1415,9 +1414,7 @@
                 if (user.loans) user.loans.forEach(loan => allLoans.push({ userName: user.name, email, ...loan }));
             });
             allLoans.sort((a,b) => new Date(b.appliedDate) - new Date(a.appliedDate)).slice(0,10).forEach(loan => {
-                tbody.innerHTML += `<td>${loan.userName}</td>
-                    <td>${formatCurrency(loan.amount)}</td>
-                    <td>${loan.months}</td>
+                tbody.innerHTML += `叭<td>${loan.userName}</td><td>${formatCurrency(loan.amount)}</td><td>${loan.months}</td>
                     <td><span class="pill pill-${loan.status}">${loan.status}</span></td>
                     <td>${loan.status === 'pending' ? `<button onclick="approveLoan('${loan.email}', '${loan.id}')" class="success-btn">Approve</button>` : '-'}</td>
                  </tr>`;
@@ -1548,15 +1545,7 @@
 
             document.getElementById('loan-amount').addEventListener('input', function() {
                 const amount = parseFloat(this.value);
-                const errorDiv = document.getElementById('loan-amount-error');
-                if (errorDiv) {
-                    if (amount && (amount < 1000 || amount > 2000)) {
-                        errorDiv.style.display = 'block';
-                    } else {
-                        errorDiv.style.display = 'none';
-                    }
-                }
-                if (amount && amount >= 1000 && amount <= 2000) updatePaymentPreview();
+                if (amount && amount >= 1000 && amount <= 20000) updatePaymentPreview();
             });
             document.getElementById('payment-months').addEventListener('change', updatePaymentPreview);
             document.getElementById('personal-phone').addEventListener('input', function(e) {
@@ -1570,7 +1559,7 @@
             document.getElementById('next-to-personal').onclick = function() {
                 if (!document.getElementById('loan-type').value) { alert('Select loan type'); return; }
                 const amount = parseFloat(document.getElementById('loan-amount').value);
-                if (!amount || amount < 1000 || amount > 2000) { alert('Loan amount must be between ₱1,000 and ₱2,000'); return; }
+                if (!amount || amount < 1000 || amount > 20000) { alert('Invalid amount'); return; }
                 if (!document.getElementById('payment-months').value) { alert('Select payment period'); return; }
                 showPage('personal-info');
             };
@@ -1612,6 +1601,7 @@
                 document.getElementById('warning-modal').style.display = 'none';
             };
             
+            // Payment confirmation modal handlers
             document.getElementById('confirm-payment-submit').onclick = function() {
                 document.getElementById('payment-warning-modal').style.display = 'none';
                 submitPaymentForApproval();
@@ -1645,7 +1635,7 @@
         function updatePaymentPreview() {
             const amount = parseFloat(document.getElementById('loan-amount').value);
             const months = parseInt(document.getElementById('payment-months').value);
-            if (amount && months && amount >= 1000 && amount <= 2000) {
+            if (amount && months && amount >= 1000 && amount <= 20000) {
                 const calc = calculateMonthlyPayment(amount, months);
                 document.getElementById('monthly-payment-preview').textContent = formatCurrency(calc.monthlyPayment);
                 document.getElementById('total-months-preview').textContent = months;
@@ -1676,9 +1666,8 @@
                 const dueDate = new Date(appliedDate);
                 dueDate.setMonth(dueDate.getMonth() + i);
                 remaining -= calc.monthlyPayment;
-                tbody.innerHTML += `<td>Month ${i}</td><td>${dueDate.toISOString().split('T')[0]}</td>
-                    <td>${formatCurrency(calc.monthlyPayment)}</td><td>${formatCurrency(Math.max(0, remaining))}</td>
-                  </tr>`;
+                tbody.innerHTML += `<tr><td>Month ${i}</td><td>${dueDate.toISOString().split('T')[0]}</td>
+                    <td>${formatCurrency(calc.monthlyPayment)}</td><td>${formatCurrency(Math.max(0, remaining))}</td></tr>`;
             }
         }
 
@@ -1784,15 +1773,12 @@
                     }
                     actionBtn = `<button class="success-btn" style="padding:8px;" onclick="showPaymentModal(${i + 1}, ${totalDueMonth})">Pay Now</button>`;
                 }
-                tbody.innerHTML += `<tr>
-                    <td>Month ${i + 1}</td>
-                    <td>${month.dueDate}</td>
+                tbody.innerHTML += `<tr><td>Month ${i + 1}</td><td>${month.dueDate}</td>
                     <td>${formatCurrency(month.originalAmount)}</td>
                     <td class="${penalty > 0 ? 'pill-penalty' : ''}">${penalty > 0 ? formatCurrency(penalty) : '-'}</td>
                     <td>${formatCurrency(totalDueMonth)}</td>
                     <td><span class="pill ${statusClass}">${status}</span></td>
-                    <td>${actionBtn}</td>
-                </tr>`;
+                    <td>${actionBtn}</td></tr>`;
             }
         }
 
@@ -1911,16 +1897,10 @@
             tbody.innerHTML = '';
             Object.entries(usersData).forEach(([email, user]) => {
                 if (user.loans) user.loans.filter(l => l.status === 'pending').forEach(loan => {
-                    tbody.innerHTML += `<tr>
-                        <td>${user.name}</td>
-                        <td>${loan.id}</td>
-                        <td>${formatCurrency(loan.amount)}</td>
-                        <td>${loan.months} months</td>
-                        <td>
-                            <button onclick="approveLoan('${email}', '${loan.id}')" class="success-btn">Approve</button>
-                            <button onclick="rejectLoan('${email}', '${loan.id}')" class="danger-btn">Reject</button>
-                        </td>
-                    </tr>`;
+                    tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
+                        <td>${formatCurrency(loan.amount)}</td><td>${loan.months} months</td>
+                        <td><button onclick="approveLoan('${email}', '${loan.id}')" class="success-btn">Approve</button>
+                        <button onclick="rejectLoan('${email}', '${loan.id}')" class="danger-btn">Reject</button></td></tr>`;
                 });
             });
         }
@@ -1949,12 +1929,8 @@
                                 const next = unpaid[0];
                                 const dueDate = new Date(next.dueDate);
                                 const daysLeft = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
-                                tbody.innerHTML += `<tr>
-                                    <td>${user.name}</td>
-                                    <td>${loan.id}</td>
-                                    <td>${next.dueDate}</td>
-                                    <td>${daysLeft > 0 ? daysLeft : 0} days</td>
-                                </tr>`;
+                                tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
+                                    <td>${next.dueDate}</td><td>${daysLeft > 0 ? daysLeft : 0} days</td></tr>`;
                             }
                         }
                     });
@@ -1975,14 +1951,9 @@
                             const last = loan.paymentHistory[loan.paymentHistory.length - 1];
                             lastPayment = `Month ${last.month} - ${last.date}`;
                         }
-                        tbody.innerHTML += `<tr>
-                            <td>${user.name}</td>
-                            <td>${loan.id}</td>
-                            <td>${formatCurrency(due)}</td>
-                            <td>${formatCurrency(paid)}</td>
-                            <td>${formatCurrency(due - paid)}</td>
-                            <td>${lastPayment}</td>
-                        </tr>`;
+                        tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
+                            <td>${formatCurrency(due)}</td><td>${formatCurrency(paid)}</td>
+                            <td>${formatCurrency(due - paid)}</td><td>${lastPayment}</td></tr>`;
                     });
                 }
             });
@@ -1997,19 +1968,12 @@
                         if (loan.pendingPayments) {
                             loan.pendingPayments.forEach(payment => {
                                 if (payment.status === 'pending') {
-                                    tbody.innerHTML += `<tr>
-                                        <td>${user.name}</td>
-                                        <td>${loan.id}</td>
-                                        <td>Month ${payment.month}</td>
-                                        <td>${formatCurrency(payment.totalAmount)}</td>
-                                        <td>${payment.method}</td>
-                                        <td>${payment.reference}</td>
+                                    tbody.innerHTML += `<tr><td>${user.name}</td><td>${loan.id}</td>
+                                        <td>Month ${payment.month}</td><td>${formatCurrency(payment.totalAmount)}</td>
+                                        <td>${payment.method}</td><td>${payment.reference}</td>
                                         <td><button onclick="viewReceipt('${email}', '${loan.id}', ${payment.month})" class="secondary-btn">View</button></td>
-                                        <td>
-                                            <button onclick="approvePayment('${email}', '${loan.id}', ${payment.month})" class="success-btn">✓ Approve</button>
-                                            <button onclick="rejectPayment('${email}', '${loan.id}', ${payment.month})" class="danger-btn">✗ Reject</button>
-                                        </td>
-                                    </tr>`;
+                                        <td><button onclick="approvePayment('${email}', '${loan.id}', ${payment.month})" class="success-btn">✓ Approve</button>
+                                        <button onclick="rejectPayment('${email}', '${loan.id}', ${payment.month})" class="danger-btn">✗ Reject</button></td></tr>`;
                                 }
                             });
                         }
@@ -2095,7 +2059,7 @@
             const tbody = document.getElementById('profile-user-loans');
             tbody.innerHTML = '';
             if (user.loans) user.loans.forEach(loan => {
-                tbody.innerHTML += `<tr><td>${loan.id}</td><td>${formatCurrency(loan.amount)}</td><td><span class="pill pill-${loan.status}">${loan.status}</span></td></tr>`;
+                tbody.innerHTML += `叭<td>${loan.id}</td><td>${formatCurrency(loan.amount)}</td><td><span class="pill pill-${loan.status}">${loan.status}</span></td>`;
             });
             document.getElementById('user-profile-display').style.display = 'block';
         };
